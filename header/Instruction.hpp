@@ -39,10 +39,26 @@ public:
             uint8_t funct3;
             uint8_t funct7;
         } r;
+
+        struct { // S-type format (e.g., STORE instructions)
+            uint8_t rs1;
+            uint8_t rs2;
+            uint8_t funct3;
+            int imm;
+        } s;
+
+        struct { // B-type format (e.g., Branch instructions)
+            uint8_t rs1;
+            uint8_t rs2;
+            uint8_t funct3;
+            int imm;
+        } b;
+
         struct { // U-type format (e.g., LUI)
             uint8_t rd;
             int imm;
         } u;
+        
         struct { // J-type format (e.g., JAL)
             uint8_t rd;
             int imm;

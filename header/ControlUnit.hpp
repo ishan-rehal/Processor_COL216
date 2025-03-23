@@ -3,13 +3,25 @@
 
 #include "Instruction.hpp"
 
+
+// Define ALU operation types.
+enum class ALUOp {
+    NONE,
+    ADD,
+    SUB,
+    MUL,
+    DIV
+    // You can add more (e.g., AND, OR, etc.) as needed.
+};
+
+
 // Structure holding the control signals for an instruction.
 struct ControlSignals {
     bool regWrite;
     bool memRead;
     bool memWrite;
     bool branch;
-    int aluOp; // For example, 0 = add, 1 = subtract, etc.
+    ALUOp aluOp; 
 };
 
 class ControlUnit {

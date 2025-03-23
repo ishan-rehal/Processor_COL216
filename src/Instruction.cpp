@@ -1,5 +1,6 @@
 #include "Instruction.hpp"
 #include <cstdlib>
+#include <iostream>
 
 Instruction::Instruction(const std::string &hex)
     : rawHex(hex), rawOpcode(0), opcode(0), rd(0), rs1(0), rs2(0),
@@ -36,6 +37,11 @@ void Instruction::decode() {
         int imm_low  = (rawOpcode >> 7)  & 0x1F;
         immediate = (imm_high << 5) | imm_low;
         // Further decode rs1, rs2, funct3 as needed.
+        info.s.rs1 = (rawOpcode >> 15) & 0x1F;
+        info.s.rs2 = (rawOpcode >> 20) & 0x1F;
+        info.s.funct3 = (rawOpcode >> 12) & 0x7;
+        info.s.imm = immediate;
+
     }
     else if (opcode == 0x63) { // B-type example (branch).
         type = InstType::B_TYPE;
@@ -44,6 +50,11 @@ void Instruction::decode() {
         int imm_10_5 = (rawOpcode >> 25) & 0x3F;
         int imm_4_1  = (rawOpcode >> 8)  & 0xF;
         immediate = (imm_12 << 12) | (imm_11 << 11) | (imm_10_5 << 5) | (imm_4_1 << 1);
+        info.b.rs1 = (rawOpcode >> 15) & 0x1F;
+        info.b.rs2 = (rawOpcode >> 20) & 0x1F;
+        info.b.funct3 = (rawOpcode >> 12) & 0x7;
+        info.b.imm = immediate;
+
     }
     else if (opcode == 0x37 || opcode == 0x17) { // U-type example (LUI, AUIPC).
         type = InstType::U_TYPE;
@@ -62,5 +73,6 @@ void Instruction::decode() {
     else {
         type = InstType::UNKNOWN;
         // Optionally print an error or handle unsupported opcodes.
+        std::cout << "Unsupported opcode: " << opcode << std::endl;
     }
 }

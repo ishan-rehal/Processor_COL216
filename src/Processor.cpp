@@ -179,7 +179,6 @@ void Processor::decode() {
     id_ex.pc = if_id.pc;
     id_ex.instruction = if_id.instruction;
 
-    // Use the ControlUnit to set control signals.
     auto signals = ControlUnit::decode(if_id.instruction);
     id_ex.regWrite = signals.regWrite;
     id_ex.memRead  = signals.memRead;
@@ -187,33 +186,84 @@ void Processor::decode() {
     id_ex.branch   = signals.branch;
     id_ex.aluOp    = signals.aluOp;
 
-    // For an I-type instruction (e.g., ADDI) – extend for other types.
-    if (if_id.instruction.type == InstType::I_TYPE) {
-        id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
-        id_ex.rs2Val = 0;
-        id_ex.imm    = if_id.instruction.info.i.imm;
+    switch (if_id.instruction.type) {
+        case InstType::I_TYPE:
+            id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
+            id_ex.rs2Val = 0;
+            id_ex.imm    = if_id.instruction.info.i.imm;
+            break;
+
+        case InstType::R_TYPE:
+            id_ex.rs1Val = regs[if_id.instruction.info.r.rs1];
+            id_ex.rs2Val = regs[if_id.instruction.info.r.rs2];
+            id_ex.imm    = 0;  // No immediate in R-type
+            break;
+
+        case InstType::S_TYPE:
+            id_ex.rs1Val = regs[if_id.instruction.info.s.rs1];
+            id_ex.rs2Val = regs[if_id.instruction.info.s.rs2];
+            id_ex.imm    = if_id.instruction.info.s.imm;
+            break;
+
+        case InstType::B_TYPE:
+            id_ex.rs1Val = regs[if_id.instruction.info.b.rs1];
+            id_ex.rs2Val = regs[if_id.instruction.info.b.rs2];
+            id_ex.imm    = if_id.instruction.info.b.imm;
+            break;
+
+        case InstType::U_TYPE:
+            id_ex.rs1Val = 0; // Not used, but safe to clear
+            id_ex.rs2Val = 0;
+            id_ex.imm    = if_id.instruction.info.u.imm;
+            break;
+
+        case InstType::J_TYPE:
+            id_ex.rs1Val = 0;
+            id_ex.rs2Val = 0;
+            id_ex.imm    = if_id.instruction.info.j.imm;
+            break;
+
+        default:
+            id_ex.rs1Val = 0;
+            id_ex.rs2Val = 0;
+            id_ex.imm    = 0;
+            break;
     }
-    // Add additional decoding for R, S, B, etc. as required.
 }
+
 
 // -------------------------
 // Execute Stage
 // -------------------------
 void Processor::execute() {
     uint32_t operand1 = id_ex.rs1Val;
-    uint32_t operand2 = id_ex.imm;  // For ADDI, immediate is the second operand.
+    uint32_t operand2 = id_ex.imm;  // For I-type arithmetic, immediate is used as the second operand.
     uint32_t aluResult = 0;
 
     // Forwarding and hazard detection logic.
     if (forwardingEnabled) {
         // TODO: Implement forwarding logic.
     } else {
-        // TODO: Implement hazard detection and stalling.
+        // TODO: Implement hazard detection and stall logic.
     }
 
-    // For aluOp == 0, perform addition.
-    if (id_ex.aluOp == 0) {
-        aluResult = ALU::add(operand1, operand2);
+    // Use a switch-case based on the ALUOp enum.
+    switch (id_ex.aluOp) {
+        case ALUOp::ADD:
+            aluResult = ALU::add(operand1, operand2);
+            break;
+        case ALUOp::SUB:
+            aluResult = ALU::sub(operand1, operand2);
+            break;
+        case ALUOp::MUL:
+            aluResult = ALU::mul(operand1, operand2);
+            break;
+        case ALUOp::DIV:
+            aluResult = ALU::div(operand1, operand2);
+            break;
+        default:
+            aluResult = 0;
+            break;
     }
     
     // Populate the EX/MEM latch.
@@ -226,6 +276,7 @@ void Processor::execute() {
     ex_mem.instruction  = id_ex.instruction;
     ex_mem.branchTarget = id_ex.pc + id_ex.imm;  // For branch instructions.
 }
+
 
 // -------------------------
 // Memory Access Stage
