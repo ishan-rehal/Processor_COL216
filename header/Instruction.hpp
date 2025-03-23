@@ -74,6 +74,9 @@ public:
 
     // Decodes the raw opcode into fields.
     void decode();
+    void print_opcode(int rawOpcode);
+    void printc_instruction() const;
+    void instruction_copy(Instruction &inst);
 };
 
 #endif // INSTRUCTION_HPP

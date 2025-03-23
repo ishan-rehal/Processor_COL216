@@ -294,6 +294,10 @@ public:
     ID_EX_Latch id_ex;
     EX_MEM_Latch ex_mem;
     MEM_WB_Latch mem_wb;
+    IF_ID_Latch next_if_id;
+    ID_EX_Latch next_id_ex;
+    EX_MEM_Latch next_ex_mem;
+    MEM_WB_Latch next_mem_wb;
 
     // Constructor: loads instructions from hex strings and sets forwarding mode.
     Processor(const std::vector<std::string>& instructionsHex, bool forwarding);
@@ -302,14 +306,17 @@ public:
     void runCycle();
 
     // Pipeline stage functions.
-    void fetch();
-    void decode();
-    void execute();
-    void memAccess();
-    void writeBack();
+    void fetch(int cycle);
+    void decode(int cycle);
+    void execute(int cycle);
+    void memAccess(int cycle);
+    void writeBack(int cycle);
+    void updateLatches();
 
     // Helper function: prints the current state of the pipeline.
     void printPipelineState();
+    void debug_print();
+    void print_registers();
 };
 
 #endif // PROCESSOR_HPP

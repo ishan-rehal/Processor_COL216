@@ -28,10 +28,12 @@ int main(int argc, char* argv[]) {
 
     // Run simulation for the specified number of cycles.
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
-        std::cout << "\nCycle " << cycle + 1 << ":" << std::endl;
+        std::cout << "Cycle " << cycle + 1 << ":\n";
         processor.runCycle();
-        processor.printPipelineState();
-        std::cout << "-----------------------" << std::endl;
+        // The runCycle() method internally updates and prints pipeline state.
+        // If you want to print it again separately, uncomment the next line.
+        // processor.printPipelineState();
+        std::cout << "-----------------------\n";
     }
 
     return 0;

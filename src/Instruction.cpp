@@ -1,17 +1,24 @@
-#include "Instruction.hpp"
+#include "../header/Instruction.hpp"
 #include <cstdlib>
 #include <iostream>
+#include <bitset>
 
 Instruction::Instruction(const std::string &hex)
     : rawHex(hex), rawOpcode(0), opcode(0), rd(0), rs1(0), rs2(0),
       funct3(0), funct7(0), immediate(0), type(InstType::UNKNOWN) {
     // Convert the hex string to a 32-bit unsigned integer.
     rawOpcode = std::stoul(hex, nullptr, 16);
-    decode();
+}
+void Instruction::print_opcode(int rawOpcode)
+{
+    std::bitset<32> bits(rawOpcode);
+    std::cout << "Raw opcode (32-bit): " << bits << std::endl;
+    
 }
 
 void Instruction::decode() {
     // Extract the opcode (lowest 7 bits).
+
     opcode = rawOpcode & 0x7F;
     
     // Determine instruction type and decode accordingly.
@@ -74,5 +81,32 @@ void Instruction::decode() {
         type = InstType::UNKNOWN;
         // Optionally print an error or handle unsupported opcodes.
         std::cout << "Unsupported opcode: " << opcode << std::endl;
+        std::cout << "Raw opcode: " << rawOpcode << std::endl;
     }
+    
 }
+
+
+void Instruction::printc_instruction() const {
+    if(rawHex == "00000000" || rawHex.empty())
+        std::cout << "NOP";
+    else
+        std::cout << rawHex;
+}
+
+void Instruction::instruction_copy(Instruction &inst)
+{
+    inst.rawHex = rawHex;
+    inst.rawOpcode = rawOpcode;
+    inst.opcode = opcode;
+    inst.rd = rd;
+    inst.rs1 = rs1;
+    inst.rs2 = rs2;
+    inst.funct3 = funct3;
+    inst.funct7 = funct7;
+    inst.immediate = immediate;
+    inst.type = type;
+    inst.info = info;
+}
+
+
