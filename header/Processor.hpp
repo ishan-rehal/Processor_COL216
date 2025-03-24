@@ -286,6 +286,7 @@ class Processor {
 public:
     uint32_t PC;
     bool forwardingEnabled;
+    bool stallIF = false;
     std::vector<uint32_t> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
     std::vector<uint8_t> stack_memory;
@@ -303,6 +304,8 @@ public:
     // Constructor: loads instructions from hex strings and sets forwarding mode.
     Processor(const std::vector<std::string>& instructionsHex, bool forwarding);
     
+    // Resets the processor state.
+    uint8_t getRD(const Instruction &inst);
     // Runs one simulation cycle (calls all pipeline stages).
     void runCycle();
 
