@@ -301,7 +301,7 @@ public:
 
     // Constructor: loads instructions from hex strings and sets forwarding mode.
     Processor(const std::vector<std::string>& instructionsHex, bool forwarding);
-
+    
     // Runs one simulation cycle (calls all pipeline stages).
     void runCycle();
 

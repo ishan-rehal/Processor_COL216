@@ -127,21 +127,38 @@ void Processor::execute(int cycle) {
     if (cycle == 0) {
         uint32_t operand1 = id_ex.rs1Val;
         uint32_t operand2 = 0;
-        
-        // For I-type instructions, use immediate.
-        // For R-type instructions, use rs2Val.
-        if (id_ex.instruction.type == InstType::I_TYPE) {
-            operand2 = id_ex.imm;
-        } else if (id_ex.instruction.type == InstType::R_TYPE) {
-            operand2 = id_ex.rs2Val;
-        } else {
-            // For other types, adjust accordingly.
-            operand2 = id_ex.imm;
+
+        // Set operand2 based on instruction type.
+        switch (id_ex.instruction.type) {
+            case InstType::R_TYPE:
+                operand2 = id_ex.rs2Val;
+                break;
+            case InstType::I_TYPE:
+                operand2 = id_ex.imm;
+                break;
+            case InstType::S_TYPE:
+                operand2 = id_ex.imm;
+                break;
+            case InstType::B_TYPE:
+                operand2 = id_ex.rs2Val;
+                break;
+            case InstType::U_TYPE:
+                // For U-type, operand2 may not be used by the ALU.
+                operand2 = id_ex.imm;
+                break;
+            case InstType::J_TYPE: // ye PC update mei krna h
+                // For J-type (e.g., JAL), we compute the jump target.
+                // The jump target is computed as current PC + immediate.
+                // Although we set operand2 here, the main purpose is to compute branchTarget.
+                operand2 = id_ex.imm;
+                break;
+            default:
+                operand2 = id_ex.imm;
+                break;
         }
-        
+
         uint32_t aluResult = 0;
-        
-        // Compute ALU operation based on aluOp.
+        // Perform the ALU operation as needed.
         switch (id_ex.aluOp) {
             case ALUOp::ADD:
                 aluResult = ALU::add(operand1, operand2);
@@ -160,6 +177,10 @@ void Processor::execute(int cycle) {
                 break;
         }
         
+        // For branch or jump instructions (B-type and J-type),
+        // compute the branch/jump target address.
+        next_ex_mem.branchTarget = id_ex.pc + id_ex.imm;
+        
         // Prepare next EX/MEM latch.
         next_ex_mem.aluResult = aluResult;
         next_ex_mem.rs2Val = id_ex.rs2Val;
@@ -168,11 +189,11 @@ void Processor::execute(int cycle) {
         next_ex_mem.memWrite = id_ex.memWrite;
         next_ex_mem.branch = id_ex.branch;
         next_ex_mem.instruction = id_ex.instruction;
-        next_ex_mem.branchTarget = id_ex.pc + id_ex.imm;
-    } else {
-        // Second half: no additional work in execute stage.
+
     }
+    // Second half: no additional work in execute stage.
 }
+
 
 
 // -------------------------
