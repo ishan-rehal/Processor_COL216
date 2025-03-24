@@ -346,16 +346,19 @@ void Processor::memAccess(int cycle) {
         uint8_t funct3 = ex_mem.instruction.info.s.funct3;
         switch (funct3) {
             case 0: // SB: Store Byte
+            std::cout << "Storing byte at address " << addr << std::endl;
                 if (addr < stack_memory.size())
                     stack_memory[addr] = value & 0xFF;
                 break;
             case 1: // SH: Store Halfword
+            std::cout << "Storing halfword at address " << addr << std::endl;
                 if (addr + 1 < stack_memory.size()) {
                     stack_memory[addr] = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
                 }
                 break;
             case 2: // SW: Store Word
+            std::cout << "Storing word at address " << addr << std::endl;
                 if (addr + 3 < stack_memory.size()) {
                     stack_memory[addr]     = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
@@ -364,6 +367,7 @@ void Processor::memAccess(int cycle) {
                 }
                 break;
             case 3: // SD: Store Doubleword (if supported)
+            std::cout << "Storing doubleword at address " << addr << std::endl;
                 if (addr + 7 < stack_memory.size()) {
                     for (int i = 0; i < 8; i++) {
                         stack_memory[addr + i] = (value >> (8 * i)) & 0xFF;
@@ -388,6 +392,7 @@ void Processor::memAccess(int cycle) {
         uint8_t funct3 = ex_mem.instruction.info.i.funct3;
         switch (funct3) {
             case 0: { // LB: Load Byte (sign-extended)
+                std::cout << "Loading Byte from : " << addr << std::endl ;
                 if (addr < stack_memory.size()) {
                     int8_t byte = static_cast<int8_t>(stack_memory[addr]);
                     data = static_cast<int32_t>(byte);
@@ -395,12 +400,14 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 4: { // LBU: Load Byte Unsigned
+                std::cout << "Loading Byte Unsigned from : " << addr << std::endl ;
                 if (addr < stack_memory.size()) {
                     data = stack_memory[addr];
                 }
                 break;
             }
             case 1: { // LH: Load Halfword (sign-extended)
+                std::cout << "Loading HW from : " << addr << std::endl ;
                 if (addr + 1 < stack_memory.size()) {
                     int16_t half = static_cast<int16_t>(
                         stack_memory[addr] | (stack_memory[addr + 1] << 8)
@@ -410,12 +417,14 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 5: { // LHU: Load Halfword Unsigned
+                std::cout << "Loading HWU from : " << addr << std::endl ;
                 if (addr + 1 < stack_memory.size()) {
                     data = stack_memory[addr] | (stack_memory[addr + 1] << 8);
                 }
                 break;
             }
             case 2: { // LW: Load Word
+                std::cout << "Loading Word from : " << addr << std::endl ;
                 if (addr + 3 < stack_memory.size()) {
                     data = stack_memory[addr] |
                            (stack_memory[addr + 1] << 8) |
@@ -425,6 +434,7 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 6: { // LWU: Load Word Unsigned
+                std::cout << "Loading Word Unsigned from : " << addr << std::endl ;
                 if (addr + 3 < stack_memory.size()) {
                     data = stack_memory[addr] |
                            (stack_memory[addr + 1] << 8) |
