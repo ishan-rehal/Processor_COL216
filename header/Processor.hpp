@@ -288,7 +288,8 @@ public:
     bool forwardingEnabled;
     std::vector<uint32_t> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
-
+    std::vector<uint8_t> stack_memory;
+    
     // Pipeline latches.
     IF_ID_Latch if_id;
     ID_EX_Latch id_ex;
