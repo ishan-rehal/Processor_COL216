@@ -1,7 +1,7 @@
 // Processor.cpp
-#include "Processor.hpp"
-#include "ControlUnit.hpp"
-#include "ALU.hpp"
+#include "../header/Processor.hpp"
+#include "../header/ControlUnit.hpp"
+#include "../header/ALU.hpp"
 #include <iostream>
 
 // Constructor: initialize registers, PC, pipeline latches, and the stack memory.
@@ -74,9 +74,8 @@ void Processor::fetch(int cycle) {
     }
 }
 
-
 void Processor::decode(int cycle) {
-    // We only do the decode logic in the second half (cycle == 1).
+    // Decode logic runs in the second half of the pipeline cycle
     if (cycle == 1) {
         std::cout << "Decoding instruction: ";
         if_id.instruction.printc_instruction();
@@ -85,6 +84,11 @@ void Processor::decode(int cycle) {
         // 1) Decode raw fields if not NOP
         if (if_id.instruction.type != InstType::NOP) {
             if_id.instruction.decode();
+            if(if_id.instruction.type == InstType::R_TYPE)
+            {
+                std::cout << "Decoded the R-type instruction: ";
+                if_id.instruction.print_inst_members();
+            }
         }
 
         // Identify which registers the current IF/ID instruction needs
@@ -119,13 +123,12 @@ void Processor::decode(int cycle) {
                 break;
         }
 
-        // 2) Hazard detection (no forwarding) => must check ID/EX, EX/MEM, and MEM/WB
+        // 2) Hazard detection (when no forwarding):
         bool stallNeeded = false;
 
         // (a) Check ID/EX
         if (id_ex.regWrite) {
             uint8_t rd_idex = getRD(id_ex.instruction);
-            // If ID/EX is writing a register we need now:
             if (rd_idex != 0) {
                 if ((usesRS1 && rd_idex == neededRS1) ||
                     (usesRS2 && rd_idex == neededRS2)) {
@@ -145,17 +148,6 @@ void Processor::decode(int cycle) {
             }
         }
 
-        // (c) Check MEM/WB
-        // if (mem_wb.regWrite) {
-        //     uint8_t rd_memwb = getRD(mem_wb.instruction);
-        //     if (rd_memwb != 0) {
-        //         if ((usesRS1 && rd_memwb == neededRS1) ||
-        //             (usesRS2 && rd_memwb == neededRS2)) {
-        //             stallNeeded = true;
-        //         }
-        //     }
-        // }
-
         // 3) If hazard => insert a NOP in ID/EX + stall the front end
         if (stallNeeded) {
             Instruction nop;
@@ -170,13 +162,13 @@ void Processor::decode(int cycle) {
             next_id_ex.rs2Val      = 0;
             next_id_ex.imm         = 0;
 
-            // Indicate that IF should be stalled next cycle
+            // Stall IF for one cycle (so we don't overwrite this IF/ID)
             stallIF = true;
             return;
         }
 
-        // 4) No stall => normal decode logic
-        auto signals = ControlUnit::decode(if_id.instruction);
+        // 4) No stall => normal decode logic from the ControlUnit
+        ControlSignals signals = ControlUnit::decode(if_id.instruction);
 
         // Copy instruction + PC into ID/EX
         next_id_ex.pc          = if_id.pc;
@@ -187,26 +179,40 @@ void Processor::decode(int cycle) {
         next_id_ex.branch      = signals.branch;
         next_id_ex.aluOp       = signals.aluOp;
 
-        // Read registers from the register file
+        // -------------------------------------------------------
+        // Register read logic + special handling for branch/jump
+        // -------------------------------------------------------
         switch (if_id.instruction.type) {
+            // -----------------
+            // R-TYPE
+            // -----------------
             case InstType::R_TYPE:
                 next_id_ex.rs1Val = regs[if_id.instruction.info.r.rs1];
                 next_id_ex.rs2Val = regs[if_id.instruction.info.r.rs2];
                 next_id_ex.imm    = 0;
                 break;
 
+            // -----------------
+            // I-TYPE
+            // -----------------
             case InstType::I_TYPE:
                 next_id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
                 next_id_ex.rs2Val = 0;
                 next_id_ex.imm    = if_id.instruction.info.i.imm;
                 break;
 
+            // -----------------
+            // S-TYPE
+            // -----------------
             case InstType::S_TYPE:
                 next_id_ex.rs1Val = regs[if_id.instruction.info.s.rs1];
                 next_id_ex.rs2Val = regs[if_id.instruction.info.s.rs2];
                 next_id_ex.imm    = if_id.instruction.info.s.imm;
                 break;
 
+            // -----------------
+            // B-TYPE (Branches)
+            // -----------------
             case InstType::B_TYPE: {
                 uint32_t rs1Val = regs[if_id.instruction.info.b.rs1];
                 uint32_t rs2Val = regs[if_id.instruction.info.b.rs2];
@@ -216,36 +222,107 @@ void Processor::decode(int cycle) {
                 next_id_ex.rs2Val = rs2Val;
                 next_id_ex.imm    = offset;
 
-                // Example: decode-stage branch logic
                 uint8_t f3 = if_id.instruction.info.b.funct3;
                 bool branchTaken = false;
-                // ... compute branchTaken (e.g. for BEQ, BNE, etc.) ...
-                
+
+                switch (f3) {
+                    case 0: // BEQ
+                        branchTaken = (rs1Val == rs2Val);
+                        break;
+                    case 1: // BNE
+                        branchTaken = (rs1Val != rs2Val);
+                        break;
+                    case 4: // BLT
+                        branchTaken = ((int32_t)rs1Val < (int32_t)rs2Val);
+                        break;
+                    case 5: // BGE
+                        branchTaken = ((int32_t)rs1Val >= (int32_t)rs2Val);
+                        break;
+                    case 6: // BLTU
+                        branchTaken = (rs1Val < rs2Val);
+                        break;
+                    case 7: // BGEU
+                        branchTaken = (rs1Val >= rs2Val);
+                        break;
+                    default:
+                        // If unknown branch, treat as not taken
+                        break;
+                }
+
+                // Update PC in the decode stage
                 if (branchTaken) {
                     PC = if_id.pc + offset;
                 } else {
                     PC = if_id.pc + 4;
                 }
-                // Force bubble next fetch to avoid hazards
-                stallIF = true;
 
-                break;
+                // Flush the pipeline: send NOP to ID/EX
+                Instruction nop;
+                nop.type = InstType::NOP;
+                next_id_ex.instruction = nop;
+                next_id_ex.regWrite    = false;
+                next_id_ex.memRead     = false;
+                next_id_ex.memWrite    = false;
+                next_id_ex.branch      = false;
+                next_id_ex.aluOp       = ALUOp::NONE;
+                next_id_ex.rs1Val      = 0;
+                next_id_ex.rs2Val      = 0;
+                next_id_ex.imm         = 0;
+
+                // ALSO flush IF/ID so we won't re-decode the same branch
+                next_if_id.instruction = nop;
+                next_if_id.pc          = PC;
+
+                // DO NOT stall next cycle — we want to fetch the new instruction
+                stallIF = false;
+
+                return; // Done handling the branch
             }
 
+            // -----------------
+            // U-TYPE
+            // -----------------
             case InstType::U_TYPE:
                 next_id_ex.rs1Val = 0;
                 next_id_ex.rs2Val = 0;
                 next_id_ex.imm    = if_id.instruction.info.u.imm;
                 break;
 
-            case InstType::J_TYPE:
-                next_id_ex.rs1Val = 0;
-                next_id_ex.rs2Val = 0;
-                next_id_ex.imm    = if_id.instruction.info.j.imm;
-                break;
+            // -----------------
+            // J-TYPE (e.g. JAL)
+            // -----------------
+            case InstType::J_TYPE: {
+                int32_t offset = if_id.instruction.info.j.imm;
+                // Unconditional jump
+                PC = if_id.pc + offset;
 
+                // Flush pipeline: send NOP to ID/EX
+                Instruction nop;
+                nop.type = InstType::NOP;
+                next_id_ex.instruction = nop;
+                next_id_ex.regWrite    = false;
+                next_id_ex.memRead     = false;
+                next_id_ex.memWrite    = false;
+                next_id_ex.branch      = false;
+                next_id_ex.aluOp       = ALUOp::NONE;
+                next_id_ex.rs1Val      = 0;
+                next_id_ex.rs2Val      = 0;
+                next_id_ex.imm         = 0;
+
+                // ALSO flush IF/ID so we won't re-decode the same jump
+                next_if_id.instruction = nop;
+                next_if_id.pc          = PC;
+
+                // DO NOT stall next cycle — let new fetch proceed
+                stallIF = false;
+
+                return; 
+            }
+
+            // -----------------
+            // NOP / UNKNOWN
+            // -----------------
             default:
-                // NOP or UNKNOWN
                 next_id_ex.rs1Val = 0;
                 next_id_ex.rs2Val = 0;
                 next_id_ex.imm    = 0;
@@ -256,12 +333,17 @@ void Processor::decode(int cycle) {
 
 
 
-
 // -------------------------
 // Execute Stage (with cycle parameter)
 // -------------------------
 void Processor::execute(int cycle) {
     if (cycle == 0) {
+        std::cout << "[DEBUG] EX stage: Instruction = ";
+        id_ex.instruction.printc_instruction();
+        std::cout << "\n  ALUOp = " << (int)id_ex.aluOp
+                  << ", rs1Val = " << id_ex.rs1Val
+                  << ", rs2Val = " << id_ex.rs2Val
+                  << ", imm = " << id_ex.imm << std::endl;
         uint32_t operand1 = id_ex.rs1Val;
         uint32_t operand2 = 0;
 
@@ -294,13 +376,14 @@ void Processor::execute(int cycle) {
                 break;
         }
 
-        uint32_t aluResult = 0;
+        int aluResult = 0;
         // Perform the ALU operation as needed.
         switch (id_ex.aluOp) {
             case ALUOp::ADD:
                 aluResult = ALU::add(operand1, operand2);
                 break;
             case ALUOp::SUB:
+                std::cout << "Subtracting " << operand1 << " - " << operand2 << std::endl;
                 aluResult = ALU::sub(operand1, operand2);
                 break;
             case ALUOp::MUL:

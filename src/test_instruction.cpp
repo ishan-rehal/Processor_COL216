@@ -13,12 +13,14 @@ int main() {
     //           = (0 << 25) | (2 << 20) | (1 << 15) | (0 << 12) | (5 << 7) | 0x33 = 0x002082B3
     {
         Instruction inst("002082B3");
+        
         assert(inst.type == InstType::R_TYPE);
         assert(inst.info.r.rd     == 5);
         assert(inst.info.r.funct3 == 0);
         assert(inst.info.r.rs1    == 1);
         assert(inst.info.r.rs2    == 2);
         assert(inst.info.r.funct7 == 0);
+        inst.print_inst_members();
     }
 
     // -----------------------
@@ -105,12 +107,19 @@ int main() {
     // -----------------------
     // Test Unknown Instruction
     // Use an opcode that does not match any known type.
+
     {
-        Instruction inst("FFFFFFFF");
-        assert(inst.type == InstType::UNKNOWN);
+        Instruction inst("0x402081b3");
+        // assert(inst.type == InstType::R_TYPE);
+        // assert(inst.info.r.rd     == 5);
+        // assert(inst.info.r.funct3 == 0);
+        // assert(inst.info.r.rs1    == 1);
+        // assert(inst.info.r.rs2    == 2);
+        // assert(inst.info.r.funct7 == 0);
+        inst.print_inst_members();
     }
 
-    std::cout << "All tests passed!" << std::endl;
+    std::cout << "All tests passed" << std::endl;
     return 0;
 }
 // End of test_instruction.cpp

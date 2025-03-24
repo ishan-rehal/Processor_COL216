@@ -15,12 +15,7 @@ public:
     
     // Decoded fields.
     uint8_t opcode;       // 7-bit opcode field.
-    uint8_t rd;           // Destination register.
-    uint8_t rs1;          // Source register 1.
-    uint8_t rs2;          // Source register 2.
-    uint8_t funct3;       // 3-bit function field.
-    uint8_t funct7;       // 7-bit function field.
-    int immediate;        // Immediate value (if applicable).
+
     
     InstType type;        // Type of instruction.
 
@@ -67,8 +62,7 @@ public:
     } info;
 
     // Constructors.
-    Instruction() : rawHex("00000000"), rawOpcode(0), opcode(0), rd(0), rs1(0), rs2(0),
-                    funct3(0), funct7(0), immediate(0), type(InstType::NOP) {}
+    Instruction() : rawHex("00000000"), rawOpcode(0), opcode(0), type(InstType::NOP) {}
                     
     Instruction(const std::string &hex);
 
@@ -77,6 +71,7 @@ public:
     void print_opcode(int rawOpcode);
     void printc_instruction() const;
     void instruction_copy(Instruction &inst);
+    void print_inst_members();
 };
 
 #endif // INSTRUCTION_HPP

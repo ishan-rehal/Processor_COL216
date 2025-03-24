@@ -287,7 +287,7 @@ public:
     uint32_t PC;
     bool forwardingEnabled;
     bool stallIF = false;
-    std::vector<uint32_t> regs;  // 32 general-purpose registers.
+    std::vector<int> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
     std::vector<uint8_t> stack_memory;
     

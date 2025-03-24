@@ -23,7 +23,7 @@ struct ID_EX_Latch {
 };
 
 struct EX_MEM_Latch {
-    uint32_t aluResult;
+    int aluResult;
     uint32_t rs2Val;
     bool regWrite;
     bool memRead;
@@ -34,7 +34,7 @@ struct EX_MEM_Latch {
 };
 
 struct MEM_WB_Latch {
-    uint32_t writeData;
+    int writeData;
     bool regWrite;
     Instruction instruction;
 };

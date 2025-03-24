@@ -1,4 +1,5 @@
 #include "ControlUnit.hpp"
+#include <iostream>
 
 ControlSignals ControlUnit::decode(const Instruction &inst) {
     ControlSignals signals = {false, false, false, false, ALUOp::NONE};
@@ -6,17 +7,19 @@ ControlSignals ControlUnit::decode(const Instruction &inst) {
     // R-type instructions (opcode 0x33)
     if (inst.type == InstType::R_TYPE) {
         signals.regWrite = true;
+
+        std::cout << "DEBUG PPRINT CONTROL UNIT funct3 and funct 7 :: " << (int)inst.info.r.funct3 << " " << (int)inst.info.r.funct7 << std::endl;
         // Example: if funct3 is 0 and funct7 is 0x00 => ADD,
         // if funct7 is 0x20 => SUB, and if funct7 is 0x01 (M-extension) then check funct3 for MUL/DIV.
-        if (inst.funct3 == 0x0) {
-            if (inst.funct7 == 0x00) {
+        if (inst.info.r.funct3 == 0x0) {
+            if (inst.info.r.funct7 == 0x00) {
                 signals.aluOp = ALUOp::ADD;
-            } else if (inst.funct7 == 0x20) {
+            } else if (inst.info.r.funct7 == 0x20) {
                 signals.aluOp = ALUOp::SUB;
-            } else if (inst.funct7 == 0x01) {
-                if (inst.funct3 == 0x0) {
+            } else if (inst.info.r.funct7 == 0x01) {
+                if (inst.info.r.funct3 == 0x0) {
                     signals.aluOp = ALUOp::MUL;
-                } else if (inst.funct3 == 0x4) {
+                } else if (inst.info.r.funct3 == 0x4) {
                     signals.aluOp = ALUOp::DIV;
                 }
             }
