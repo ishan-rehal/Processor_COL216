@@ -34,7 +34,7 @@ struct EX_MEM_Latch {
 };
 
 struct MEM_WB_Latch {
-    int writeData;
+    int writeData = 0;
     bool regWrite;
     Instruction instruction;
 };
