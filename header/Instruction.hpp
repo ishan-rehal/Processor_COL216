@@ -18,6 +18,7 @@ public:
 
     
     InstType type;        // Type of instruction.
+    int id; // New field to uniquely identify the instruction (I1, I2, …)
 
     // For modularity, you can use a union or structs for different formats.
     union {
@@ -62,7 +63,7 @@ public:
     } info;
 
     // Constructors.
-    Instruction() : rawHex("00000000"), rawOpcode(0), opcode(0), type(InstType::NOP) {}
+    Instruction() : rawHex("00000000"), rawOpcode(0), opcode(0), type(InstType::NOP), id(-1) {}
                     
     Instruction(const std::string &hex);
 

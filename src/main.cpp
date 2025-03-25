@@ -24,17 +24,19 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> instructions = Utils::readInstructionsFromFile(inputFile);
 
     // Create Processor instance.
-    Processor processor(instructions, forwarding);
+    Processor processor(instructions, forwarding, cycleCount);
 
     // Run simulation for the specified number of cycles.
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
-        std::cout << "Cycle " << cycle + 1 << ":\n";
+        // std::cout << "Cycle " << cycle + 1 << ":\n";
         processor.runCycle();
+        
         // The runCycle() method internally updates and prints pipeline state.
         // If you want to print it again separately, uncomment the next line.
         // processor.printPipelineState();
-        std::cout << "-----------------------\n";
+        // std::cout << "-----------------------\n";
     }
+    processor.printFullPipelineLog();
 
     return 0;
 }

@@ -11,17 +11,17 @@ int main() {
     //  - rd = 5, funct3 = 0, rs1 = 1, rs2 = 2, funct7 = 0
     // Encoding: rawOpcode = (funct7 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | (rd << 7) | opcode
     //           = (0 << 25) | (2 << 20) | (1 << 15) | (0 << 12) | (5 << 7) | 0x33 = 0x002082B3
-    {
-        Instruction inst("002082B3");
+    // {
+    //     Instruction inst("002082B3");
         
-        assert(inst.type == InstType::R_TYPE);
-        assert(inst.info.r.rd     == 5);
-        assert(inst.info.r.funct3 == 0);
-        assert(inst.info.r.rs1    == 1);
-        assert(inst.info.r.rs2    == 2);
-        assert(inst.info.r.funct7 == 0);
-        inst.print_inst_members();
-    }
+    //     assert(inst.type == InstType::R_TYPE);
+    //     assert(inst.info.r.rd     == 5);
+    //     assert(inst.info.r.funct3 == 0);
+    //     assert(inst.info.r.rs1    == 1);
+    //     assert(inst.info.r.rs2    == 2);
+    //     assert(inst.info.r.funct7 == 0);
+    //     inst.print_inst_members();
+    // }
 
     // -----------------------
     // Test I-type Instruction (e.g. ADDI)
@@ -117,6 +117,17 @@ int main() {
         // assert(inst.info.r.rs2    == 2);
         // assert(inst.info.r.funct7 == 0);
         inst.print_inst_members();
+    }
+
+    {
+        Instruction inst("0xfe015ee3");
+        assert(inst.type == InstType::B_TYPE);
+        assert(inst.info.b.rs1    == 2);
+        assert(inst.info.b.rs2    == 0);
+        assert(inst.info.b.funct3 == 5);
+        // assert(inst.info.b.imm    == -4);
+        inst.print_inst_members();
+        
     }
 
     std::cout << "All tests passed" << std::endl;

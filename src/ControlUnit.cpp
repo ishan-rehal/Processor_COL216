@@ -8,7 +8,7 @@ ControlSignals ControlUnit::decode(const Instruction &inst) {
     if (inst.type == InstType::R_TYPE) {
         signals.regWrite = true;
 
-        std::cout << "DEBUG PPRINT CONTROL UNIT funct3 and funct 7 :: " << (int)inst.info.r.funct3 << " " << (int)inst.info.r.funct7 << std::endl;
+        // std::cout << "DEBUG PPRINT CONTROL UNIT funct3 and funct 7 :: " << (int)inst.info.r.funct3 << " " << (int)inst.info.r.funct7 << std::endl;
         // Example: if funct3 is 0 and funct7 is 0x00 => ADD,
         // if funct7 is 0x20 => SUB, and if funct7 is 0x01 (M-extension) then check funct3 for MUL/DIV.
         if (inst.info.r.funct3 == 0x0) {

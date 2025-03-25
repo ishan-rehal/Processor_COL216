@@ -3,16 +3,25 @@
 #include "../header/ControlUnit.hpp"
 #include "../header/ALU.hpp"
 #include <iostream>
+#include <iomanip>
+#include <string>
 
 // Constructor: initialize registers, PC, pipeline latches, and the stack memory.
-Processor::Processor(const std::vector<std::string>& instructionsHex, bool forwarding)
-    : PC(0), forwardingEnabled(forwarding)
+Processor::Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount)
+    : PC(0), forwardingEnabled(forwarding),stallIF(false),stallNeeded(false), totalCycleCount(totalCycleCount),
+    currentCycle(0), headerPrinted(false)  
 {
     // Load instructions from hex strings.
     for (const auto &hex : instructionsHex) {
         Instruction inst(hex);
         instructionMemory.push_back(inst);
     }
+
+    // Assign a unique id to each instruction.
+    for (size_t i = 0; i < instructionMemory.size(); ++i) {
+        instructionMemory[i].id = i;
+    }
+
     regs.resize(32, 0);  // Initialize 32 registers to 0.
 
     // Initialize pipeline registers to NOP.
@@ -30,7 +39,63 @@ Processor::Processor(const std::vector<std::string>& instructionsHex, bool forwa
     
     // NEW: Initialize stack memory to 1024 bytes (all zeros)
     stack_memory.resize(1024, 0);
+
+     // Initialize the pipeline log: one row per instruction, with one cell per cycle.
+     pipelineLog.resize(instructionMemory.size(), std::vector<std::string>(totalCycleCount, ""));
 }
+
+// Logging helper: record the given stage name for the instruction at the current cycle.
+void Processor::logInstructionStage(const Instruction &instr, const std::string &stage) {
+    if (instr.type == InstType::NOP || instr.id < 0 || currentCycle >= totalCycleCount)
+        return;
+    std::string &entry = pipelineLog[instr.id][currentCycle];
+
+    // If the incoming stage is "-", only update if nothing meaningful is logged.
+    if (stage == "-") {
+        if (!entry.empty() && entry != "-") {
+            // A valid stage (e.g., "ID") is already logged; ignore the dash.
+            return;
+        } else {
+            // If nothing or only a dash is present, set it as dash.
+            entry = "-";
+            return;
+        }
+    }
+
+    // For non-dash stages, if the current entry is empty or just a dash, replace it.
+    if (entry.empty() || entry == "-") {
+        entry = stage;
+    } else {
+        // Otherwise, if this stage isn't already recorded in the entry, append it.
+        if (entry.find(stage) == std::string::npos) {
+            entry += "/" + stage;
+        }
+    }
+}
+
+
+
+// Print the header row with cycle numbers.
+void Processor::printPipelineLogHeader() const {
+    std::cout << std::setw(6) << " " << ":";
+    for (int i = 0; i < totalCycleCount; ++i) {
+        std::cout << std::setw(10) << ("C" + std::to_string(i+1));
+    }
+    std::cout << std::endl;
+}
+
+// Print one instruction’s log row (e.g., "I1 :  IF   ID   EX   MEM   WB ...")
+void Processor::printInstructionLog(int instrId) const {
+    if (instrId < 0 || instrId >= (int)pipelineLog.size()) return;
+    std::cout << "I" << (instrId + 1) << std::setw(5) << ":";
+    for (const auto &cell : pipelineLog[instrId]) {
+        std::cout << std::setw(10) << cell;
+    }
+    std::cout << std::endl;
+}
+
+
+
 
 // Helper to get the destination register for any instruction type.
 // Returns 0 if the instruction does not have a destination register.
@@ -63,6 +128,7 @@ void Processor::fetch(int cycle) {
             // Normal fetch
             next_if_id.instruction = instructionMemory[PC / 4];
             next_if_id.pc = PC;
+            logInstructionStage(next_if_id.instruction, "IF");
         }
         else {
             // Past the end of instructions => keep fetching NOP
@@ -77,19 +143,29 @@ void Processor::fetch(int cycle) {
 void Processor::decode(int cycle) {
     // Decode logic runs in the second half of the pipeline cycle
     if (cycle == 1) {
-        std::cout << "Decoding instruction: ";
-        if_id.instruction.printc_instruction();
-        std::cout << std::endl;
+        
+        // if_id.instruction.printc_instruction();
+        // std::cout << std::endl;
 
         // 1) Decode raw fields if not NOP
         if (if_id.instruction.type != InstType::NOP) {
             if_id.instruction.decode();
-            if(if_id.instruction.type == InstType::R_TYPE)
-            {
-                std::cout << "Decoded the R-type instruction: ";
-                if_id.instruction.print_inst_members();
-            }
+            // if(if_id.instruction.type == InstType::R_TYPE)
+            // {
+            //     std::cout << "Decoded the R-type instruction: ";
+            //     if_id.instruction.print_inst_members();
+            // }
         }
+        std :: cout << "Cycle No: " << currentCycle << std::endl;
+        std::cout << "Decoding instruction: ";
+        if_id.instruction.print_inst_members();
+        std::cout << std::endl;
+
+        // If not a NOP and no stall, log "ID".
+        if (if_id.instruction.type != InstType::NOP && !stallNeeded) {
+            logInstructionStage(if_id.instruction, "ID");
+        }
+
 
         // Identify which registers the current IF/ID instruction needs
         bool usesRS1 = false, usesRS2 = false;
@@ -124,7 +200,7 @@ void Processor::decode(int cycle) {
         }
 
         // 2) Hazard detection (when no forwarding):
-        bool stallNeeded = false;
+        stallNeeded = false;
 
         // (a) Check ID/EX
         if (id_ex.regWrite) {
@@ -150,6 +226,7 @@ void Processor::decode(int cycle) {
 
         // 3) If hazard => insert a NOP in ID/EX + stall the front end
         if (stallNeeded) {
+            logInstructionStage(if_id.instruction, "-");
             Instruction nop;
             nop.type = InstType::NOP;
             next_id_ex.instruction = nop;
@@ -165,8 +242,11 @@ void Processor::decode(int cycle) {
             // Stall IF for one cycle (so we don't overwrite this IF/ID)
             stallIF = true;
             return;
+        }else {
+            // No hazard: log "-" for this instruction.
+            logInstructionStage(if_id.instruction, "-");
         }
-
+        
         // 4) No stall => normal decode logic from the ControlUnit
         ControlSignals signals = ControlUnit::decode(if_id.instruction);
 
@@ -258,8 +338,17 @@ void Processor::decode(int cycle) {
 
                 // Flush the pipeline: send NOP to ID/EX
                 Instruction nop;
-                nop.type = InstType::NOP;
-                next_id_ex.instruction = nop;
+                // nop.type = InstType::NOP;
+                // next_id_ex.instruction = nop;
+                // next_id_ex.regWrite    = false;
+                // next_id_ex.memRead     = false;
+                // next_id_ex.memWrite    = false;
+                // next_id_ex.branch      = false;
+                // next_id_ex.aluOp       = ALUOp::NONE;
+                // next_id_ex.rs1Val      = 0;
+                // next_id_ex.rs2Val      = 0;
+                // next_id_ex.imm         = 0;
+                next_id_ex.instruction = if_id.instruction;
                 next_id_ex.regWrite    = false;
                 next_id_ex.memRead     = false;
                 next_id_ex.memWrite    = false;
@@ -269,8 +358,10 @@ void Processor::decode(int cycle) {
                 next_id_ex.rs2Val      = 0;
                 next_id_ex.imm         = 0;
 
+
                 // ALSO flush IF/ID so we won't re-decode the same branch
                 next_if_id.instruction = nop;
+                // next_if_id.instruction = if_id.instruction;
                 next_if_id.pc          = PC;
 
                 // DO NOT stall next cycle — we want to fetch the new instruction
@@ -338,12 +429,12 @@ void Processor::decode(int cycle) {
 // -------------------------
 void Processor::execute(int cycle) {
     if (cycle == 0) {
-        std::cout << "[DEBUG] EX stage: Instruction = ";
-        id_ex.instruction.printc_instruction();
-        std::cout << "\n  ALUOp = " << (int)id_ex.aluOp
-                  << ", rs1Val = " << id_ex.rs1Val
-                  << ", rs2Val = " << id_ex.rs2Val
-                  << ", imm = " << id_ex.imm << std::endl;
+        // std::cout << "[DEBUG] EX stage: Instruction = ";
+        // id_ex.instruction.printc_instruction();
+        // std::cout << "\n  ALUOp = " << (int)id_ex.aluOp
+        //           << ", rs1Val = " << id_ex.rs1Val
+        //           << ", rs2Val = " << id_ex.rs2Val
+        //           << ", imm = " << id_ex.imm << std::endl;
         uint32_t operand1 = id_ex.rs1Val;
         uint32_t operand2 = 0;
 
@@ -383,7 +474,7 @@ void Processor::execute(int cycle) {
                 aluResult = ALU::add(operand1, operand2);
                 break;
             case ALUOp::SUB:
-                std::cout << "Subtracting " << operand1 << " - " << operand2 << std::endl;
+                // std::cout << "Subtracting " << operand1 << " - " << operand2 << std::endl;
                 aluResult = ALU::sub(operand1, operand2);
                 break;
             case ALUOp::MUL:
@@ -409,6 +500,7 @@ void Processor::execute(int cycle) {
         next_ex_mem.memWrite = id_ex.memWrite;
         next_ex_mem.branch = id_ex.branch;
         next_ex_mem.instruction = id_ex.instruction;
+        logInstructionStage(id_ex.instruction, "EX");
 
     }
     // Second half: no additional work in execute stage.
@@ -429,19 +521,19 @@ void Processor::memAccess(int cycle) {
         uint8_t funct3 = ex_mem.instruction.info.s.funct3;
         switch (funct3) {
             case 0: // SB: Store Byte
-            std::cout << "Storing byte at address " << addr << std::endl;
+            // std::cout << "Storing byte at address " << addr << std::endl;
                 if (addr < stack_memory.size())
                     stack_memory[addr] = value & 0xFF;
                 break;
             case 1: // SH: Store Halfword
-            std::cout << "Storing halfword at address " << addr << std::endl;
+            // std::cout << "Storing halfword at address " << addr << std::endl;
                 if (addr + 1 < stack_memory.size()) {
                     stack_memory[addr] = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
                 }
                 break;
             case 2: // SW: Store Word
-            std::cout << "Storing word at address " << addr << std::endl;
+            // std::cout << "Storing word at address " << addr << std::endl;
                 if (addr + 3 < stack_memory.size()) {
                     stack_memory[addr]     = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
@@ -450,7 +542,7 @@ void Processor::memAccess(int cycle) {
                 }
                 break;
             case 3: // SD: Store Doubleword (if supported)
-            std::cout << "Storing doubleword at address " << addr << std::endl;
+            // std::cout << "Storing doubleword at address " << addr << std::endl;
                 if (addr + 7 < stack_memory.size()) {
                     for (int i = 0; i < 8; i++) {
                         stack_memory[addr + i] = (value >> (8 * i)) & 0xFF;
@@ -463,11 +555,15 @@ void Processor::memAccess(int cycle) {
         }
 
         // We produce a NOP for MEM/WB after handling the store
-        Instruction nop;
-        nop.type = InstType::NOP;
-        next_mem_wb.instruction = nop;
-        next_mem_wb.regWrite    = false;
+        // Instruction nop;
+        // nop.type = InstType::NOP;
+        // next_mem_wb.instruction = nop;
+        // next_mem_wb.regWrite    = false;
+        // next_mem_wb.writeData   = 0;
+        // Propagate the store instruction itself to MEM/WB instead of a NOP.
         next_mem_wb.writeData   = 0;
+        next_mem_wb.regWrite    = false;
+        next_mem_wb.instruction = ex_mem.instruction;
     }
     // Else if this is a load operation:
     else if (ex_mem.memRead) {
@@ -475,7 +571,7 @@ void Processor::memAccess(int cycle) {
         uint8_t funct3 = ex_mem.instruction.info.i.funct3;
         switch (funct3) {
             case 0: { // LB: Load Byte (sign-extended)
-                std::cout << "Loading Byte from : " << addr << std::endl ;
+                // std::cout << "Loading Byte from : " << addr << std::endl ;
                 if (addr < stack_memory.size()) {
                     int8_t byte = static_cast<int8_t>(stack_memory[addr]);
                     data = static_cast<int32_t>(byte);
@@ -483,14 +579,14 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 4: { // LBU: Load Byte Unsigned
-                std::cout << "Loading Byte Unsigned from : " << addr << std::endl ;
+                // std::cout << "Loading Byte Unsigned from : " << addr << std::endl ;
                 if (addr < stack_memory.size()) {
                     data = stack_memory[addr];
                 }
                 break;
             }
             case 1: { // LH: Load Halfword (sign-extended)
-                std::cout << "Loading HW from : " << addr << std::endl ;
+                // std::cout << "Loading HW from : " << addr << std::endl ;
                 if (addr + 1 < stack_memory.size()) {
                     int16_t half = static_cast<int16_t>(
                         stack_memory[addr] | (stack_memory[addr + 1] << 8)
@@ -500,14 +596,14 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 5: { // LHU: Load Halfword Unsigned
-                std::cout << "Loading HWU from : " << addr << std::endl ;
+                // std::cout << "Loading HWU from : " << addr << std::endl ;
                 if (addr + 1 < stack_memory.size()) {
                     data = stack_memory[addr] | (stack_memory[addr + 1] << 8);
                 }
                 break;
             }
             case 2: { // LW: Load Word
-                std::cout << "Loading Word from : " << addr << std::endl ;
+                // std::cout << "Loading Word from : " << addr << std::endl ;
                 if (addr + 3 < stack_memory.size()) {
                     data = stack_memory[addr] |
                            (stack_memory[addr + 1] << 8) |
@@ -517,7 +613,7 @@ void Processor::memAccess(int cycle) {
                 break;
             }
             case 6: { // LWU: Load Word Unsigned
-                std::cout << "Loading Word Unsigned from : " << addr << std::endl ;
+                // std::cout << "Loading Word Unsigned from : " << addr << std::endl ;
                 if (addr + 3 < stack_memory.size()) {
                     data = stack_memory[addr] |
                            (stack_memory[addr + 1] << 8) |
@@ -541,6 +637,7 @@ void Processor::memAccess(int cycle) {
         next_mem_wb.regWrite    = ex_mem.regWrite;
         next_mem_wb.instruction = ex_mem.instruction;
     }
+    logInstructionStage(ex_mem.instruction, "MEM");
 
     // >>> Approach A: Flush EX/MEM afterwards for ALU or load/store instructions.
     // That way, the instruction won't stay in EX/MEM indefinitely.
@@ -583,10 +680,13 @@ void Processor::writeBack(int cycle) {
                     break;
             }
             regs[rd] = mem_wb.writeData;
-            std::cout << "WriteBack: Register x" << unsigned(rd)
-                      << " updated to " << regs[rd] << std::endl;
+            // std::cout << "WriteBack: Register x" << unsigned(rd)
+            //           << " updated to " << regs[rd] << std::endl;
         }
+        logInstructionStage(mem_wb.instruction, "WB");
     } 
+
+    
     // Second half: no write operations.
 
     // >>> Approach A: flush out MEM/WB afterwards
@@ -615,10 +715,11 @@ void Processor::updateLatches() {
         if (id_ex.instruction.type != InstType::B_TYPE) {
             PC += 4; 
         }
-    } else {
+    }
+     else {
         // Freeze: do NOT update if_id or PC
         stallIF = false; // Clear for next cycle unless decode sets it again
-        std::cout << "Stalling front end, reusing same IF/ID instruction.\n";
+        // std::cout << "Stalling front end, reusing same IF/ID instruction.\n";
     }
 }
 
@@ -645,7 +746,8 @@ void Processor::runCycle() {
     updateLatches();
     
     // Print the concise pipeline state.
-    printPipelineState();
+    // printPipelineState();
+    currentCycle++;
     
     // Also print detailed pipeline debug info.
     // debug_print();
@@ -711,4 +813,16 @@ void Processor::print_registers()
         std::cout << "x" << i << ": " << regs[i] << std::endl;
     }
 
+}
+void Processor::printFullPipelineLog() const {
+    // Print the header row with cycle numbers.
+    printPipelineLogHeader();
+    // Loop through the entire pipeline log and print each instruction’s log row.
+    for (size_t i = 0; i < pipelineLog.size(); ++i) {
+        std::cout << "I" << (i + 1) << std::setw(5) << ":";
+        for (const auto &cell : pipelineLog[i]) {
+            std::cout << std::setw(10) << cell;
+        }
+        std::cout << std::endl;
+    }
 }

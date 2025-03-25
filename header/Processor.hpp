@@ -287,6 +287,7 @@ public:
     uint32_t PC;
     bool forwardingEnabled;
     bool stallIF = false;
+    bool stallNeeded = false;
     std::vector<int> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
     std::vector<uint8_t> stack_memory;
@@ -302,12 +303,31 @@ public:
     MEM_WB_Latch next_mem_wb;
 
     // Constructor: loads instructions from hex strings and sets forwarding mode.
-    Processor(const std::vector<std::string>& instructionsHex, bool forwarding);
+    Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount);
     
     // Resets the processor state.
     uint8_t getRD(const Instruction &inst);
     // Runs one simulation cycle (calls all pipeline stages).
     void runCycle();
+
+    
+    // Logging members:
+    int totalCycleCount;      // Total number of cycles (from input)
+    int currentCycle;         // Simulation cycle counter (full cycles)
+    bool headerPrinted;       // To print header only once
+
+    
+
+    // Pipeline log: one row per instruction; each row is a vector of strings (one cell per cycle)
+    std::vector<std::vector<std::string>> pipelineLog;
+
+    // Helper functions for logging.
+    void logInstructionStage(const Instruction &instr, const std::string &stage);
+    void printPipelineLogHeader() const;
+    void printInstructionLog(int instrId) const;
+
+
+
 
     // Pipeline stage functions.
     void fetch(int cycle);
@@ -321,6 +341,7 @@ public:
     void printPipelineState();
     void debug_print();
     void print_registers();
+    void printFullPipelineLog() const;
 };
 
 #endif // PROCESSOR_HPP
