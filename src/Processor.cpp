@@ -350,6 +350,7 @@ void Processor::decode(int cycle) {
                 if (if_id.instruction.opcode == 0x67) {  // JALR
                     int jumpTarget = next_id_ex.rs1Val + next_id_ex.imm;
                     jumpTarget &= ~1; // Optionally clear the least significant bit (address alignment)
+                    if(if_id.instruction.info.i.rd != 0)
                     regs[if_id.instruction.info.i.rd] = if_id.pc + 4;  // Save the link address (return address) in rd
                     PC = jumpTarget - 4;  // Update PC to the jump target and -4 becasue PC + 4 will take place anyways
                     Instruction nop;
