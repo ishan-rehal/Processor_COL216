@@ -273,9 +273,8 @@ void Processor::decode(int cycle) {
                         }
                     }
                 }
-                if(id_ex.memRead)
-                {
-                    uint8_t rd_idex = getRD(ex_mem.instruction);
+                if(id_ex.memRead) {
+                    uint8_t rd_idex = getRD(id_ex.instruction);  // <-- Corrected
                     if (rd_idex != 0) {
                         if ((usesRS1 && rd_idex == neededRS1) ||
                             (usesRS2 && rd_idex == neededRS2)) {
@@ -283,6 +282,7 @@ void Processor::decode(int cycle) {
                         }
                     }
                 }
+                
             }
             // For non-branch instructions, only stall on a load–use hazard.
             else if (id_ex.memRead) {
