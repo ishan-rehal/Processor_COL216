@@ -249,9 +249,22 @@ void Processor::decode(int cycle) {
             }
         } else {
             // Forwarding is enabled.
-            // When forwarding is enabled, only check for load–use hazards.
             stallNeeded = false;
-            if (id_ex.memRead) {
+            // For branch instructions, stall if there is ANY dependency with the previous instruction,
+            // because branch resolution happens in decode using register file values.
+            if (if_id.instruction.type == InstType::B_TYPE) {
+                if (id_ex.regWrite) {
+                    uint8_t rd_idex = getRD(id_ex.instruction);
+                    if (rd_idex != 0) {
+                        if ((usesRS1 && rd_idex == neededRS1) ||
+                            (usesRS2 && rd_idex == neededRS2)) {
+                            stallNeeded = true;
+                        }
+                    }
+                }
+            }
+            // For non-branch instructions, only stall on a load–use hazard.
+            else if (id_ex.memRead) {
                 uint8_t rd_idex = getRD(id_ex.instruction);
                 if (rd_idex != 0) {
                     if ((usesRS1 && rd_idex == neededRS1) ||
@@ -339,17 +352,34 @@ void Processor::decode(int cycle) {
             // B-TYPE (Branches)
             // -----------------
             case InstType::B_TYPE: {
+                // Read the register file values initially.
                 uint32_t rs1Val = regs[if_id.instruction.info.b.rs1];
                 uint32_t rs2Val = regs[if_id.instruction.info.b.rs2];
-                int32_t offset  = if_id.instruction.info.b.imm;
-
+                
+                // If forwarding is enabled, override with forwarded values.
+                if (forwardingEnabled) {
+                    uint8_t src1 = if_id.instruction.info.b.rs1;
+                    uint8_t src2 = if_id.instruction.info.b.rs2;
+                    // Check the EX/MEM latch first.
+                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1))
+                        rs1Val = ex_mem.aluResult;
+                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1))
+                        rs1Val = mem_wb.writeData;
+                    
+                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src2))
+                        rs2Val = ex_mem.aluResult;
+                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src2))
+                        rs2Val = mem_wb.writeData;
+                }
+                
+                // Save these values for use in later stages if needed.
                 next_id_ex.rs1Val = rs1Val;
                 next_id_ex.rs2Val = rs2Val;
-                next_id_ex.imm    = offset;
-
+                next_id_ex.imm    = if_id.instruction.info.b.imm;
+                
+                // Evaluate the branch condition using the (possibly forwarded) values.
                 uint8_t f3 = if_id.instruction.info.b.funct3;
                 bool branchTaken = false;
-
                 switch (f3) {
                     case 0: // BEQ
                         branchTaken = (rs1Val == rs2Val);
@@ -370,13 +400,12 @@ void Processor::decode(int cycle) {
                         branchTaken = (rs1Val >= rs2Val);
                         break;
                     default:
-                        // If unknown branch, treat as not taken
                         break;
                 }
-
-                // Update PC in the decode stage
+                
+                // Update PC based on the branch decision.
                 if (branchTaken) {
-                    PC = if_id.pc + offset;
+                    PC = if_id.pc + if_id.instruction.info.b.imm;
                 } else {
                     PC = if_id.pc + 4;
                 }
