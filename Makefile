@@ -4,7 +4,7 @@
 CXX      = g++
 CXXFLAGS = -std=c++11 -Wall -g -Iheader
 
-# Source files for main simulation (excluding test_instruction.cpp)
+# Source files for main simulation
 SRCS  = src/ALU.cpp \
         src/ControlUnit.cpp \
         src/Instruction.cpp \
@@ -13,30 +13,30 @@ SRCS  = src/ALU.cpp \
         src/Utils.cpp \
         src/main.cpp
 
-# Object files automatically inferred
+# Object files for non-forwarding build
 OBJS  = $(SRCS:.cpp=.o)
+
+# Object files for forwarding build (compiled with -DFORWARDING)
+OBJS_FORWARD = $(SRCS:.cpp=.forward.o)
 
 # Default target: build both non-forwarding and forwarding executables
 all: noforward forward
 
-# Non-forwarding executable
+# Non-forwarding executable (no extra flag)
 noforward: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o noforward $(OBJS)
 
-# Forwarding executable (same object files, but different runtime mode)
-forward: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o forward $(OBJS)
+# Forwarding executable: add the -DFORWARDING flag.
+forward: $(OBJS_FORWARD)
+	$(CXX) $(CXXFLAGS) -DFORWARDING -o forward $(OBJS_FORWARD)
 
-# Optional target to build and run test_instruction
-# (Standalone test for instruction decoding logic.)
-test_instruction: src/test_instruction.cpp src/Instruction.cpp
-	$(CXX) $(CXXFLAGS) -c src/Instruction.cpp -o Instruction.o
-	$(CXX) $(CXXFLAGS) -c src/test_instruction.cpp -o test_instruction.o
-	$(CXX) $(CXXFLAGS) -o test_instruction test_instruction.o Instruction.o
-
-# Generic rule to compile .cpp to .o
+# Generic rule to compile .cpp to .o (non-forwarding)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Generic rule to compile .cpp to .forward.o (forwarding)
+%.forward.o: %.cpp
+	$(CXX) $(CXXFLAGS) -DFORWARDING -c $< -o $@
 
 # Clean up object files and executables
 clean:

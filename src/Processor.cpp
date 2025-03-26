@@ -200,53 +200,86 @@ void Processor::decode(int cycle) {
                 break;
         }
 
-        // 2) Hazard detection (when no forwarding):
-        stallNeeded = false;
-
-        // (a) Check ID/EX
-        if (id_ex.regWrite) {
-            uint8_t rd_idex = getRD(id_ex.instruction);
-            if (rd_idex != 0) {
-                if ((usesRS1 && rd_idex == neededRS1) ||
-                    (usesRS2 && rd_idex == neededRS2)) {
-                    stallNeeded = true;
+        if (!forwardingEnabled) {
+            // Hazard detection when forwarding is disabled.
+            stallNeeded = false;
+        
+            // (a) Check ID/EX stage for potential hazards.
+            if (id_ex.regWrite) {
+                uint8_t rd_idex = getRD(id_ex.instruction);
+                if (rd_idex != 0) {
+                    if ((usesRS1 && rd_idex == neededRS1) ||
+                        (usesRS2 && rd_idex == neededRS2)) {
+                        stallNeeded = true;
+                    }
                 }
             }
-        }
-
-        // (b) Check EX/MEM
-        if (ex_mem.regWrite) {
-            uint8_t rd_exmem = getRD(ex_mem.instruction);
-            if (rd_exmem != 0) {
-                if ((usesRS1 && rd_exmem == neededRS1) ||
-                    (usesRS2 && rd_exmem == neededRS2)) {
-                    stallNeeded = true;
+        
+            // (b) Check EX/MEM stage for potential hazards.
+            if (ex_mem.regWrite) {
+                uint8_t rd_exmem = getRD(ex_mem.instruction);
+                if (rd_exmem != 0) {
+                    if ((usesRS1 && rd_exmem == neededRS1) ||
+                        (usesRS2 && rd_exmem == neededRS2)) {
+                        stallNeeded = true;
+                    }
                 }
             }
+        
+            // If a hazard is detected, insert a NOP in the ID/EX latch and stall IF.
+            if (stallNeeded) {
+                logInstructionStage(if_id.instruction, "-");
+                Instruction nop;
+                nop.type = InstType::NOP;
+                next_id_ex.instruction = nop;
+                next_id_ex.regWrite    = false;
+                next_id_ex.memRead     = false;
+                next_id_ex.memWrite    = false;
+                next_id_ex.branch      = false;
+                next_id_ex.aluOp       = ALUOp::NONE;
+                next_id_ex.rs1Val      = 0;
+                next_id_ex.rs2Val      = 0;
+                next_id_ex.imm         = 0;
+        
+                stallIF = true;
+                return;
+            } else {
+                // No hazard: simply log a "-" (or you could log "ID" if preferred).
+                logInstructionStage(if_id.instruction, "-");
+            }
+        } else {
+            // Forwarding is enabled.
+            // When forwarding is enabled, only check for load–use hazards.
+            stallNeeded = false;
+            if (id_ex.memRead) {
+                uint8_t rd_idex = getRD(id_ex.instruction);
+                if (rd_idex != 0) {
+                    if ((usesRS1 && rd_idex == neededRS1) ||
+                        (usesRS2 && rd_idex == neededRS2)) {
+                        stallNeeded = true;
+                    }
+                }
+            }
+            if (stallNeeded) {
+                logInstructionStage(if_id.instruction, "-");
+                Instruction nop;
+                nop.type = InstType::NOP;
+                next_id_ex.instruction = nop;
+                next_id_ex.regWrite    = false;
+                next_id_ex.memRead     = false;
+                next_id_ex.memWrite    = false;
+                next_id_ex.branch      = false;
+                next_id_ex.aluOp       = ALUOp::NONE;
+                next_id_ex.rs1Val      = 0;
+                next_id_ex.rs2Val      = 0;
+                next_id_ex.imm         = 0;
+                stallIF = true;
+                return;
+            } else {
+                logInstructionStage(if_id.instruction, "-");
+            }
         }
-
-        // 3) If hazard => insert a NOP in ID/EX + stall the front end
-        if (stallNeeded) {
-            logInstructionStage(if_id.instruction, "-");
-            Instruction nop;
-            nop.type = InstType::NOP;
-            next_id_ex.instruction = nop;
-            next_id_ex.regWrite    = false;
-            next_id_ex.memRead     = false;
-            next_id_ex.memWrite    = false;
-            next_id_ex.branch      = false;
-            next_id_ex.aluOp       = ALUOp::NONE;
-            next_id_ex.rs1Val      = 0;
-            next_id_ex.rs2Val      = 0;
-            next_id_ex.imm         = 0;
-
-            // Stall IF for one cycle (so we don't overwrite this IF/ID)
-            stallIF = true;
-            return;
-        }else {
-            // No hazard: log "-" for this instruction.
-            logInstructionStage(if_id.instruction, "-");
-        }
+        
         
         // 4) No stall => normal decode logic from the ControlUnit
         ControlSignals signals = ControlUnit::decode(if_id.instruction);
@@ -480,6 +513,56 @@ void Processor::execute(int cycle) {
                 break;
         }
 
+         // If forwarding is enabled, override operands if a later stage holds the updated value.
+        if (forwardingEnabled) {
+            uint8_t rs1 = 0, rs2 = 0;
+            bool useRS2 = false;
+            switch (id_ex.instruction.type) {
+                case InstType::R_TYPE:
+                    rs1 = id_ex.instruction.info.r.rs1;
+                    rs2 = id_ex.instruction.info.r.rs2;
+                    useRS2 = true;
+                    break;
+                case InstType::I_TYPE:
+                    rs1 = id_ex.instruction.info.i.rs1;
+                    break;
+                case InstType::S_TYPE:
+                    rs1 = id_ex.instruction.info.s.rs1;
+                    rs2 = id_ex.instruction.info.s.rs2;
+                    useRS2 = true;
+                    break;
+                case InstType::B_TYPE:
+                    rs1 = id_ex.instruction.info.b.rs1;
+                    rs2 = id_ex.instruction.info.b.rs2;
+                    useRS2 = true;
+                    break;
+                default:
+                    break;
+            }
+
+            // Forward for operand1 (rs1)
+            if (rs1 != 0) {
+                if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs1)) {
+                    operand1 = ex_mem.aluResult;
+                } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs1)) {
+                    operand1 = mem_wb.writeData;
+                }
+            }
+
+            // Forward for operand2 (rs2), if applicable.
+            if (useRS2 && rs2 != 0) {
+                if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs2)) {
+                    operand2 = ex_mem.aluResult;
+                } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs2)) {
+                    operand2 = mem_wb.writeData;
+                }
+            }
+        }
+
+
+
+
+
         int aluResult = 0;
         // Perform the ALU operation as needed.
         switch (id_ex.aluOp) {
@@ -531,22 +614,26 @@ void Processor::memAccess(int cycle) {
     // If this is a store operation:
     if (ex_mem.memWrite) {
         uint32_t value = ex_mem.rs2Val;
+        // When forwarding is enabled, forward the value from MEM/WB if available.
+        if (forwardingEnabled) {
+            uint8_t store_rs2 = ex_mem.instruction.info.s.rs2;
+            if (store_rs2 != 0 && mem_wb.regWrite && (getRD(mem_wb.instruction) == store_rs2)) {
+                value = mem_wb.writeData;
+            }
+        }
         uint8_t funct3 = ex_mem.instruction.info.s.funct3;
         switch (funct3) {
             case 0: // SB: Store Byte
-            // std::cout << "Storing byte at address " << addr << std::endl;
                 if (addr < stack_memory.size())
                     stack_memory[addr] = value & 0xFF;
                 break;
             case 1: // SH: Store Halfword
-            // std::cout << "Storing halfword at address " << addr << std::endl;
                 if (addr + 1 < stack_memory.size()) {
                     stack_memory[addr] = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
                 }
                 break;
             case 2: // SW: Store Word
-            // std::cout << "Storing word at address " << addr << std::endl;
                 if (addr + 3 < stack_memory.size()) {
                     stack_memory[addr]     = value & 0xFF;
                     stack_memory[addr + 1] = (value >> 8) & 0xFF;
@@ -554,8 +641,7 @@ void Processor::memAccess(int cycle) {
                     stack_memory[addr + 3] = (value >> 24) & 0xFF;
                 }
                 break;
-            case 3: // SD: Store Doubleword (if supported)
-            // std::cout << "Storing doubleword at address " << addr << std::endl;
+            case 3: // SD: Store Doubleword
                 if (addr + 7 < stack_memory.size()) {
                     for (int i = 0; i < 8; i++) {
                         stack_memory[addr + i] = (value >> (8 * i)) & 0xFF;
@@ -566,14 +652,6 @@ void Processor::memAccess(int cycle) {
                 // Unsupported store type.
                 break;
         }
-
-        // We produce a NOP for MEM/WB after handling the store
-        // Instruction nop;
-        // nop.type = InstType::NOP;
-        // next_mem_wb.instruction = nop;
-        // next_mem_wb.regWrite    = false;
-        // next_mem_wb.writeData   = 0;
-        // Propagate the store instruction itself to MEM/WB instead of a NOP.
         next_mem_wb.writeData   = 0;
         next_mem_wb.regWrite    = false;
         next_mem_wb.instruction = ex_mem.instruction;
