@@ -157,7 +157,7 @@ void Processor::decode(int cycle) {
             //     if_id.instruction.print_inst_members();
             // }
         }
-        std :: cout << "Cycle No: " << currentCycle << std::endl;
+        
         std::cout << "Decoding instruction: ";
         if_id.instruction.print_inst_members();
         std::cout << std::endl;
@@ -255,6 +255,27 @@ void Processor::decode(int cycle) {
             if (if_id.instruction.type == InstType::B_TYPE) {
                 if (id_ex.regWrite) {
                     uint8_t rd_idex = getRD(id_ex.instruction);
+                    if (rd_idex != 0) {
+                        if ((usesRS1 && rd_idex == neededRS1) ||
+                            (usesRS2 && rd_idex == neededRS2)) {
+                            stallNeeded = true;
+                        }
+                    }
+                    
+                }
+                if(ex_mem.memRead)
+                {
+                    uint8_t rd_idex = getRD(ex_mem.instruction);
+                    if (rd_idex != 0) {
+                        if ((usesRS1 && rd_idex == neededRS1) ||
+                            (usesRS2 && rd_idex == neededRS2)) {
+                            stallNeeded = true;
+                        }
+                    }
+                }
+                if(id_ex.memRead)
+                {
+                    uint8_t rd_idex = getRD(ex_mem.instruction);
                     if (rd_idex != 0) {
                         if ((usesRS1 && rd_idex == neededRS1) ||
                             (usesRS2 && rd_idex == neededRS2)) {
@@ -572,20 +593,25 @@ void Processor::execute(int cycle) {
             // Forward for operand1 (rs1)
             if (rs1 != 0) {
                 if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs1)) {
+                    std::cout << "Forwarded rs1 in EX stage" << std::endl;
                     operand1 = ex_mem.aluResult;
                 } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs1)) {
+                    std::cout << "Forwarded rs1 in EX stage" << std::endl;
                     operand1 = mem_wb.writeData;
                 }
             }
 
             // Forward for operand2 (rs2), if applicable.
-            if (useRS2 && rs2 != 0) {
+            if (useRS2 && rs2 != 0 && id_ex.instruction.type != InstType::S_TYPE) {
                 if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs2)) {
+                    std::cout << "Forwarded rs2 in EX stage" << std::endl;
                     operand2 = ex_mem.aluResult;
                 } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs2)) {
+                    std::cout << "Forwarded rs2 in EX stage" << std::endl;
                     operand2 = mem_wb.writeData;
                 }
             }
+            std :: cout << "Operand1: " << operand1 << " Operand2: " << operand2 << std::endl;
         }
 
 
@@ -650,6 +676,7 @@ void Processor::memAccess(int cycle) {
                 value = mem_wb.writeData;
             }
         }
+        std::cout << "Storing value " << value << " to address " << addr << std::endl;
         uint8_t funct3 = ex_mem.instruction.info.s.funct3;
         switch (funct3) {
             case 0: // SB: Store Byte
@@ -869,7 +896,7 @@ void Processor::runCycle() {
     updateLatches();
     
     // Print the concise pipeline state.
-    // printPipelineState();
+    printPipelineState();
     currentCycle++;
     
     // Also print detailed pipeline debug info.

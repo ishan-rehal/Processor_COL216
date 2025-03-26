@@ -38,6 +38,7 @@ int main(int argc, char* argv[]) {
 
     // Run simulation for the specified number of cycles.
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
+        std :: cout << "Cycle No: " << cycle + 1 << std::endl;
         processor.runCycle();
     }
     processor.printFullPipelineLog();
