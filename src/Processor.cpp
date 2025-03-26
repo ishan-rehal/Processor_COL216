@@ -692,7 +692,10 @@ void Processor::writeBack(int cycle) {
                 default:
                     break;
             }
-            regs[rd] = mem_wb.writeData;
+             // Only write back if the destination register is not x0.
+            if (rd != 0) {
+                regs[rd] = mem_wb.writeData;
+            }
             // std::cout << "WriteBack: Register x" << unsigned(rd)
             //           << " updated to " << regs[rd] << std::endl;
         }

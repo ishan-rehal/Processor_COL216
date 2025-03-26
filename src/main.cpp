@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
         // std::cout << "-----------------------\n";
     }
     processor.printFullPipelineLog();
+    processor.print_registers();
 
     return 0;
 }
