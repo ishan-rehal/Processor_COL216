@@ -41,6 +41,10 @@ else if (inst.info.r.funct7 == 0x01) {
             signals.memRead = true;
             signals.aluOp = ALUOp::ADD;  // For effective address computation.
         }
+        else if (inst.opcode == 0x67) {  // JALR
+            signals.regWrite = true;      // Link address will be written to rd
+            signals.aluOp = ALUOp::ADD;     // Compute jump target as rs1 + immediate
+        }
     }
     // S-type instructions (opcode 0x23 for STORE)
     else if (inst.opcode == 0x23) {  // S-type

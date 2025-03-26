@@ -30,22 +30,20 @@ void Instruction::decode() {
         info.r.rs2    = (rawOpcode >> 20) & 0x1F;
         info.r.funct7 = (rawOpcode >> 25) & 0x7F;
     }
-    else if (opcode == 0x13 || opcode == 0x03) {
+    else if (opcode == 0x13 || opcode == 0x03 || opcode == 0x67) {
         // --------------------------
-        // I-Type (ADDI/LOAD/etc.)
-        // 12-bit signed immediate
-        // bits [31:20]
+        // I-Type (ADDI/LOAD/JALR, etc.)
+        // 12-bit signed immediate (bits [31:20])
         // --------------------------
         type = InstType::I_TYPE;
         info.i.rd     = (rawOpcode >> 7) & 0x1F;
         info.i.funct3 = (rawOpcode >> 12) & 0x7;
         info.i.rs1    = (rawOpcode >> 15) & 0x1F;
-
+    
         // Extract the 12-bit immediate, then sign-extend
         int32_t imm_i = (rawOpcode >> 20) & 0xFFF; // bits [31:20]
-        // If the top bit (bit 11) is 1, sign-extend
-        if (imm_i & 0x800) { // 0x800 = 1 << 11
-            imm_i |= 0xFFFFF000;  // set bits [31:12]
+        if (imm_i & 0x800) { // sign extension check
+            imm_i |= 0xFFFFF000;
         }
         info.i.imm = imm_i;
     }

@@ -128,6 +128,7 @@ void Processor::fetch(int cycle) {
             // Normal fetch
             next_if_id.instruction = instructionMemory[PC / 4];
             next_if_id.pc = PC;
+            std::cout << "Fetching instruction: " << PC / 4 << std::endl;
             logInstructionStage(next_if_id.instruction, "IF");
         }
         else {
@@ -279,6 +280,17 @@ void Processor::decode(int cycle) {
                 next_id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
                 next_id_ex.rs2Val = 0;
                 next_id_ex.imm    = if_id.instruction.info.i.imm;
+                if (if_id.instruction.opcode == 0x67) {  // JALR
+                    int jumpTarget = next_id_ex.rs1Val + next_id_ex.imm;
+                    jumpTarget &= ~1; // Optionally clear the least significant bit (address alignment)
+                    regs[if_id.instruction.info.i.rd] = if_id.pc + 4;  // Save the link address (return address) in rd
+                    PC = jumpTarget - 4;  // Update PC to the jump target and -4 becasue PC + 4 will take place anyways
+                    Instruction nop;
+                    nop.type = InstType::NOP;
+                    next_id_ex.instruction = nop;  // Flush ID/EX
+                    next_if_id.instruction = nop;  // Flush IF/ID
+                    return;  // Stop further decode processing for this cycle
+                }
                 break;
 
             // -----------------
@@ -385,7 +397,8 @@ void Processor::decode(int cycle) {
             case InstType::J_TYPE: {
                 int32_t offset = if_id.instruction.info.j.imm;
                 // Unconditional jump
-                PC = if_id.pc + offset;
+                // -4 because +4 will take place in UpdateLatch
+                PC = if_id.pc + offset -4;
 
                 // Flush pipeline: send NOP to ID/EX
                 Instruction nop;

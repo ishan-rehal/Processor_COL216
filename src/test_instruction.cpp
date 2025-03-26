@@ -130,7 +130,18 @@ int main() {
         
     }
 
+    {
+        Instruction inst("0x00c00093");
+        assert(inst.type == InstType::I_TYPE);
+        assert(inst.info.i.rd     == 1);
+        assert(inst.info.i.funct3 == 0);
+        assert(inst.info.i.rs1    == 0);
+        assert(inst.info.i.imm    == 12);
+        inst.print_inst_members();
+    }
+
     std::cout << "All tests passed" << std::endl;
     return 0;
 }
 // End of test_instruction.cpp
+// g++ test_instruction.cpp Instruction.cpp -o test_instruction
