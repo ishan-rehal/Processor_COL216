@@ -1,12 +1,10 @@
 Cycle No: 1
 Fetching instruction: 0
-Operand1: 2692027192 Operand2: 2692027152
-Storing value 32593 to address 2692027192
 Decoding instruction: Unknown instruction type
 
 ----- Pipeline State -----
 IF/ID: 
-10000313
+03400093
 ID/EX: 
 NOP
 EX/MEM: 
@@ -17,19 +15,17 @@ NOP
  | Write Data: 0
 Cycle No: 2
 Fetching instruction: 1
-Operand1: 0 Operand2: 0
-Storing value 32593 to address 0
 Decoding instruction: I TYPE INSTRUCTION
-rd: 6
+rd: 1
 rs1: 0
 funct3: 0
-imm: 256
+imm: 52
 
 ----- Pipeline State -----
 IF/ID: 
-00300393
+00102023
 ID/EX: 
-10000313
+03400093
 EX/MEM: 
 NOP
  | ALU Result: 0
@@ -38,699 +34,193 @@ NOP
  | Write Data: 0
 Cycle No: 3
 Fetching instruction: 2
-Operand1: 0 Operand2: 256
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
+Decoding instruction: S TYPE INSTRUCTION
 rs1: 0
-funct3: 0
-imm: 3
+rs2: 1
+funct3: 2
+imm: 0
 
 ----- Pipeline State -----
 IF/ID: 
-00732023
+00102023
 ID/EX: 
-00300393
+NOP
 EX/MEM: 
-10000313
- | ALU Result: 256
+03400093
+ | ALU Result: 52
 MEM/WB: 
 NOP
  | Write Data: 0
 Cycle No: 4
-Fetching instruction: 3
-Operand1: 0 Operand2: 3
+Fetching instruction: 2
 Decoding instruction: S TYPE INSTRUCTION
-rs1: 6
-rs2: 7
+rs1: 0
+rs2: 1
 funct3: 2
 imm: 0
 
 ----- Pipeline State -----
 IF/ID: 
-00500393
+00102023
 ID/EX: 
-00732023
+NOP
 EX/MEM: 
-00300393
- | ALU Result: 3
+NOP
+ | ALU Result: 0
 MEM/WB: 
-10000313
- | Write Data: 256
+03400093
+ | Write Data: 52
 Cycle No: 5
-Fetching instruction: 4
-Forwarded rs1 in EX stage
-Operand1: 256 Operand2: 0
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
-rs1: 0
-funct3: 0
-imm: 5
-
------ Pipeline State -----
-IF/ID: 
-00732223
-ID/EX: 
-00500393
-EX/MEM: 
-00732023
- | ALU Result: 256
-MEM/WB: 
-00300393
- | Write Data: 3
-Cycle No: 6
-Fetching instruction: 5
-Operand1: 0 Operand2: 5
-Storing value 3 to address 256
+Fetching instruction: 2
 Decoding instruction: S TYPE INSTRUCTION
-rs1: 6
-rs2: 7
+rs1: 0
+rs2: 1
 funct3: 2
-imm: 4
+imm: 0
 
 ----- Pipeline State -----
 IF/ID: 
-00900393
+00002183
 ID/EX: 
-00732223
+00102023
 EX/MEM: 
-00500393
- | ALU Result: 5
+NOP
+ | ALU Result: 0
 MEM/WB: 
-00732023
+NOP
+ | Write Data: 0
+Cycle No: 6
+Decoding instruction: I TYPE INSTRUCTION
+rd: 3
+rs1: 0
+funct3: 2
+imm: 0
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+00002183
+EX/MEM: 
+00102023
+ | ALU Result: 0
+MEM/WB: 
+NOP
  | Write Data: 0
 Cycle No: 7
-Fetching instruction: 6
-Operand1: 256 Operand2: 4
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
-rs1: 0
-funct3: 0
-imm: 9
+Storing value 52 to address 0
+Decoding instruction: Unknown instruction type
 
 ----- Pipeline State -----
 IF/ID: 
-00732423
+NOP
 ID/EX: 
-00900393
+NOP
 EX/MEM: 
-00732223
- | ALU Result: 260
-MEM/WB: 
-00500393
- | Write Data: 5
-Cycle No: 8
-Fetching instruction: 7
-Operand1: 0 Operand2: 9
-Storing value 5 to address 260
-Decoding instruction: S TYPE INSTRUCTION
-rs1: 6
-rs2: 7
-funct3: 2
-imm: 8
-
------ Pipeline State -----
-IF/ID: 
-00000513
-ID/EX: 
-00732423
-EX/MEM: 
-00900393
- | ALU Result: 9
-MEM/WB: 
-00732223
- | Write Data: 0
-Cycle No: 9
-Fetching instruction: 8
-Operand1: 256 Operand2: 8
-Decoding instruction: I TYPE INSTRUCTION
-rd: 10
-rs1: 0
-funct3: 0
-imm: 0
-
------ Pipeline State -----
-IF/ID: 
-00300293
-ID/EX: 
-00000513
-EX/MEM: 
-00732423
- | ALU Result: 264
-MEM/WB: 
-00900393
- | Write Data: 9
-Cycle No: 10
-Fetching instruction: 9
-Operand1: 0 Operand2: 0
-Storing value 9 to address 264
-Decoding instruction: I TYPE INSTRUCTION
-rd: 5
-rs1: 0
-funct3: 0
-imm: 3
-
------ Pipeline State -----
-IF/ID: 
-00032383
-ID/EX: 
-00300293
-EX/MEM: 
-00000513
+00002183
  | ALU Result: 0
 MEM/WB: 
-00732423
+00102023
+ | Write Data: 0
+Cycle No: 8
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+00002183
+ | Write Data: 52
+Cycle No: 9
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 10
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
  | Write Data: 0
 Cycle No: 11
-Fetching instruction: 10
-Operand1: 0 Operand2: 3
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
-rs1: 6
-funct3: 2
-imm: 0
+Decoding instruction: Unknown instruction type
 
 ----- Pipeline State -----
 IF/ID: 
-00750533
-ID/EX: 
-00032383
-EX/MEM: 
-00300293
- | ALU Result: 3
-MEM/WB: 
-00000513
- | Write Data: 0
-Cycle No: 12
-Fetching instruction: 11
-Operand1: 256 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00750533
+NOP
 ID/EX: 
 NOP
-EX/MEM: 
-00032383
- | ALU Result: 256
-MEM/WB: 
-00300293
- | Write Data: 3
-Cycle No: 13
-Fetching instruction: 11
-Operand1: 0 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00430313
-ID/EX: 
-00750533
 EX/MEM: 
 NOP
  | ALU Result: 0
 MEM/WB: 
-00032383
- | Write Data: 3
-Cycle No: 14
-Fetching instruction: 12
-Forwarded rs2 in EX stage
-Operand1: 0 Operand2: 3
-Decoding instruction: I TYPE INSTRUCTION
-rd: 6
-rs1: 6
-funct3: 0
-imm: 4
+NOP
+ | Write Data: 0
+Cycle No: 12
+Decoding instruction: Unknown instruction type
 
 ----- Pipeline State -----
 IF/ID: 
-fff28293
+NOP
 ID/EX: 
-00430313
+NOP
 EX/MEM: 
-00750533
- | ALU Result: 3
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 13
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 14
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
 MEM/WB: 
 NOP
  | Write Data: 0
 Cycle No: 15
-Fetching instruction: 13
-Operand1: 256 Operand2: 4
-Decoding instruction: I TYPE INSTRUCTION
-rd: 5
-rs1: 5
-funct3: 0
-imm: -1
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-fff28293
-EX/MEM: 
-00430313
- | ALU Result: 260
-MEM/WB: 
-00750533
- | Write Data: 3
-Cycle No: 16
-Fetching instruction: 14
-Operand1: 3 Operand2: 4294967295
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-NOP
-EX/MEM: 
-fff28293
- | ALU Result: 2
-MEM/WB: 
-00430313
- | Write Data: 260
-Cycle No: 17
-Fetching instruction: 14
-Operand1: 0 Operand2: 0
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-fe0298e3
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fff28293
- | Write Data: 2
-Cycle No: 18
-Fetching instruction: 9
-Forwarded rs1 in EX stage
-Operand1: 2 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-00032383
-ID/EX: 
-NOP
-EX/MEM: 
-fe0298e3
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 19
-Fetching instruction: 10
-Operand1: 0 Operand2: 0
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
-rs1: 6
-funct3: 2
-imm: 0
-
------ Pipeline State -----
-IF/ID: 
-00750533
-ID/EX: 
-00032383
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fe0298e3
- | Write Data: 0
-Cycle No: 20
-Fetching instruction: 11
-Operand1: 260 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00750533
-ID/EX: 
-NOP
-EX/MEM: 
-00032383
- | ALU Result: 260
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 21
-Fetching instruction: 11
-Operand1: 0 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00430313
-ID/EX: 
-00750533
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-00032383
- | Write Data: 5
-Cycle No: 22
-Fetching instruction: 12
-Forwarded rs2 in EX stage
-Operand1: 3 Operand2: 5
-Decoding instruction: I TYPE INSTRUCTION
-rd: 6
-rs1: 6
-funct3: 0
-imm: 4
-
------ Pipeline State -----
-IF/ID: 
-fff28293
-ID/EX: 
-00430313
-EX/MEM: 
-00750533
- | ALU Result: 8
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 23
-Fetching instruction: 13
-Operand1: 260 Operand2: 4
-Decoding instruction: I TYPE INSTRUCTION
-rd: 5
-rs1: 5
-funct3: 0
-imm: -1
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-fff28293
-EX/MEM: 
-00430313
- | ALU Result: 264
-MEM/WB: 
-00750533
- | Write Data: 8
-Cycle No: 24
-Fetching instruction: 14
-Operand1: 2 Operand2: 4294967295
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-NOP
-EX/MEM: 
-fff28293
- | ALU Result: 1
-MEM/WB: 
-00430313
- | Write Data: 264
-Cycle No: 25
-Fetching instruction: 14
-Operand1: 0 Operand2: 0
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-fe0298e3
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fff28293
- | Write Data: 1
-Cycle No: 26
-Fetching instruction: 9
-Forwarded rs1 in EX stage
-Operand1: 1 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-00032383
-ID/EX: 
-NOP
-EX/MEM: 
-fe0298e3
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 27
-Fetching instruction: 10
-Operand1: 0 Operand2: 0
-Decoding instruction: I TYPE INSTRUCTION
-rd: 7
-rs1: 6
-funct3: 2
-imm: 0
-
------ Pipeline State -----
-IF/ID: 
-00750533
-ID/EX: 
-00032383
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fe0298e3
- | Write Data: 0
-Cycle No: 28
-Fetching instruction: 11
-Operand1: 264 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00750533
-ID/EX: 
-NOP
-EX/MEM: 
-00032383
- | ALU Result: 264
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 29
-Fetching instruction: 11
-Operand1: 0 Operand2: 0
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 10
-rs2: 7
-funct3: 0
-funct7: 0
-
------ Pipeline State -----
-IF/ID: 
-00430313
-ID/EX: 
-00750533
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-00032383
- | Write Data: 9
-Cycle No: 30
-Fetching instruction: 12
-Forwarded rs2 in EX stage
-Operand1: 8 Operand2: 9
-Decoding instruction: I TYPE INSTRUCTION
-rd: 6
-rs1: 6
-funct3: 0
-imm: 4
-
------ Pipeline State -----
-IF/ID: 
-fff28293
-ID/EX: 
-00430313
-EX/MEM: 
-00750533
- | ALU Result: 17
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 31
-Fetching instruction: 13
-Operand1: 264 Operand2: 4
-Decoding instruction: I TYPE INSTRUCTION
-rd: 5
-rs1: 5
-funct3: 0
-imm: -1
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-fff28293
-EX/MEM: 
-00430313
- | ALU Result: 268
-MEM/WB: 
-00750533
- | Write Data: 17
-Cycle No: 32
-Fetching instruction: 14
-Operand1: 1 Operand2: 4294967295
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-fe0298e3
-ID/EX: 
-NOP
-EX/MEM: 
-fff28293
- | ALU Result: 0
-MEM/WB: 
-00430313
- | Write Data: 268
-Cycle No: 33
-Fetching instruction: 14
-Operand1: 0 Operand2: 0
-Decoding instruction: B TYPE INSTRUCTION
-rs1: 5
-rs2: 0
-funct3: 1
-imm: -16
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-fe0298e3
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fff28293
- | Write Data: 0
-Cycle No: 34
-Fetching instruction: 14
-Forwarded rs1 in EX stage
-Operand1: 0 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-00000013
-ID/EX: 
-NOP
-EX/MEM: 
-fe0298e3
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 35
-Operand1: 0 Operand2: 0
-Decoding instruction: I TYPE INSTRUCTION
-rd: 0
-rs1: 0
-funct3: 0
-imm: 0
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-00000013
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-fe0298e3
- | Write Data: 0
-Cycle No: 36
-Operand1: 0 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-NOP
-EX/MEM: 
-00000013
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 37
-Operand1: 0 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-NOP
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-00000013
- | Write Data: 0
-Cycle No: 38
-Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 ----- Pipeline State -----
@@ -744,64 +234,22 @@ NOP
 MEM/WB: 
 NOP
  | Write Data: 0
-Cycle No: 39
-Operand1: 0 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-NOP
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-Cycle No: 40
-Operand1: 0 Operand2: 0
-Decoding instruction: Unknown instruction type
-
------ Pipeline State -----
-IF/ID: 
-NOP
-ID/EX: 
-NOP
-EX/MEM: 
-NOP
- | ALU Result: 0
-MEM/WB: 
-NOP
- | Write Data: 0
-      :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15       C16       C17       C18       C19       C20       C21       C22       C23       C24       C25       C26       C27       C28       C29       C30       C31       C32       C33       C34       C35       C36       C37       C38       C39       C40
-I1    :        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                              
-I2    :                  IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                    
-I3    :                            IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                          
-I4    :                                      IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                
-I5    :                                                IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                      
-I6    :                                                          IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                            
-I7    :                                                                    IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                  
-I8    :                                                                              IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                        
-I9    :                                                                                        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                              
-I10    :                                                                                                  IF        ID        EX       MEM        WB                                      IF        ID        EX       MEM        WB                                      IF        ID        EX       MEM        WB                                                                                                    
-I11    :                                                                                                            IF        ID         -        EX       MEM        WB                            IF        ID         -        EX       MEM        WB                            IF        ID         -        EX       MEM        WB                                                                                
-I12    :                                                                                                                      IF        IF        ID        EX       MEM        WB                            IF        IF        ID        EX       MEM        WB                            IF        IF        ID        EX       MEM        WB                                                                      
-I13    :                                                                                                                                          IF        ID        EX       MEM        WB                                      IF        ID        EX       MEM        WB                                      IF        ID        EX       MEM        WB                                                            
-I14    :                                                                                                                                                    IF        ID         -        EX       MEM        WB                            IF        ID         -        EX       MEM        WB                            IF        ID         -        EX       MEM        WB                                        
-I15    :                                                                                                                                                              IF        IF                                                                    IF        IF                                                                    IF        IF        IF        ID        EX       MEM        WB                    
+      :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15
+I1    :        IF        ID        EX       MEM        WB                                                                                                    
+I2    :                  IF        ID         -         -        EX       MEM        WB                                                                      
+I3    :                            IF        IF        IF        ID        EX       MEM        WB                                                            
 Registers: 
 x0: 0
-x1: 0
+x1: 52
 x2: 0
-x3: 0
+x3: 52
 x4: 0
 x5: 0
-x6: 268
-x7: 9
+x6: 0
+x7: 0
 x8: 0
 x9: 0
-x10: 17
+x10: 0
 x11: 0
 x12: 0
 x13: 0
@@ -823,4 +271,4 @@ x28: 0
 x29: 0
 x30: 0
 x31: 0
-Forwarding enabled: true
+Forwarding enabled: false
