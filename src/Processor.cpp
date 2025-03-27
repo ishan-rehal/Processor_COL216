@@ -378,9 +378,9 @@ void Processor::decode(int cycle) {
             uint32_t rs1Val = regs[if_id.instruction.info.i.rs1];
             if (forwardingEnabled) {
                 uint8_t src1 = if_id.instruction.info.i.rs1;
-                if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1))
+                if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1) && src1 != 0)
                     rs1Val = ex_mem.aluResult;
-                else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1))
+                else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1) && src1 != 0)
                     rs1Val = mem_wb.writeData;
             }
             next_id_ex.rs1Val = rs1Val;
@@ -426,14 +426,14 @@ void Processor::decode(int cycle) {
                     uint8_t src1 = if_id.instruction.info.b.rs1;
                     uint8_t src2 = if_id.instruction.info.b.rs2;
                     // Check the EX/MEM latch first.
-                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1))
+                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1) && src1 != 0)
                         rs1Val = ex_mem.aluResult;
-                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1))
+                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1) && src1 != 0)
                         rs1Val = mem_wb.writeData;
                     
-                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src2))
+                    if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src2) && src2 != 0)
                         rs2Val = ex_mem.aluResult;
-                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src2))
+                    else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src2) && src2 != 0)
                         rs2Val = mem_wb.writeData;
                 }
                 
@@ -444,6 +444,7 @@ void Processor::decode(int cycle) {
                 
                 // Evaluate the branch condition using the (possibly forwarded) values.
                 uint8_t f3 = if_id.instruction.info.b.funct3;
+                std:: cout << "Evaluating BRANCH with rs1 = " << rs1Val << ", rs2 = " << rs2Val << std::endl;
                 bool branchTaken = false;
                 switch (f3) {
                     case 0: // BEQ
