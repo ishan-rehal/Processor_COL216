@@ -1,4 +1,4 @@
-#include "../header/ALU.hpp"
+#include "ALU.hpp"
 
 int ALU::add(int op1, int op2) {
     return op1 + op2;

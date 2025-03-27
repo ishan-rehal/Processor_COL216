@@ -1,7 +1,7 @@
 // Processor.cpp
-#include "../header/Processor.hpp"
-#include "../header/ControlUnit.hpp"
-#include "../header/ALU.hpp"
+#include "Processor.hpp"
+#include "ControlUnit.hpp"
+#include "ALU.hpp"
 #include <iostream>
 #include <iomanip>
 #include <string>

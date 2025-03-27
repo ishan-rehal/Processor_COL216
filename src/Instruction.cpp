@@ -1,4 +1,4 @@
-#include "../header/Instruction.hpp"
+#include "Instruction.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <bitset>

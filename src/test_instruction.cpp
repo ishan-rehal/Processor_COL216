@@ -1,7 +1,7 @@
 // test_instruction.cpp
 #include <cassert>
 #include <iostream>
-#include "../header/Instruction.hpp"  // Assumes Instruction.hpp defines Instruction, InstType, and the union 'info'
+#include "Instruction.hpp"  // Assumes Instruction.hpp defines Instruction, InstType, and the union 'info'
 
 int main() {
     // -----------------------

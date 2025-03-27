@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 
     // Open "output.txt" in the current directory (src).
     // All std::cout output will be redirected to this file.
-    std::ofstream outFile("output.txt");
+    std::ofstream outFile("../output_files/output.txt");
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not open output.txt for writing.\n";
         return 1;
