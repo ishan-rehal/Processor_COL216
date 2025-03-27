@@ -264,7 +264,7 @@ void Processor::decode(int cycle) {
             stallNeeded = false;
             // For branch instructions, stall if there is ANY dependency with the previous instruction,
             // because branch resolution happens in decode using register file values.
-            if (if_id.instruction.type == InstType::B_TYPE) {
+            if (if_id.instruction.type == InstType::B_TYPE || if_id.instruction.opcode == 0x67) {
                 if (id_ex.regWrite) {
                     uint8_t rd_idex = getRD(id_ex.instruction);
                     if (rd_idex != 0) {
@@ -355,23 +355,54 @@ void Processor::decode(int cycle) {
             // -----------------
             // I-TYPE
             // -----------------
-            case InstType::I_TYPE:
-                next_id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
-                next_id_ex.rs2Val = 0;
-                next_id_ex.imm    = if_id.instruction.info.i.imm;
-                if (if_id.instruction.opcode == 0x67) {  // JALR
-                    int jumpTarget = next_id_ex.rs1Val + next_id_ex.imm;
-                    jumpTarget &= ~1; // Optionally clear the least significant bit (address alignment)
-                    if(if_id.instruction.info.i.rd != 0)
-                    regs[if_id.instruction.info.i.rd] = if_id.pc + 4;  // Save the link address (return address) in rd
-                    PC = jumpTarget - 4;  // Update PC to the jump target and -4 becasue PC + 4 will take place anyways
-                    Instruction nop;
-                    nop.type = InstType::NOP;
-                    next_id_ex.instruction = nop;  // Flush ID/EX
-                    next_if_id.instruction = nop;  // Flush IF/ID
-                    return;  // Stop further decode processing for this cycle
-                }
-                break;
+            // I-Type
+                    // -----------------
+        // I-TYPE
+        // -----------------
+        // I-Type
+        case InstType::I_TYPE:
+        // For most I-type instructions:
+        next_id_ex.rs1Val = regs[if_id.instruction.info.i.rs1];
+        next_id_ex.rs2Val = 0;
+        next_id_ex.imm = if_id.instruction.info.i.imm;
+        // Special handling for JALR (opcode 0x67)
+        if (if_id.instruction.opcode == 0x67) {
+            // Set up the latch to defer the link address write.
+            next_id_ex.pc = if_id.pc;
+            next_id_ex.instruction = if_id.instruction;
+            next_id_ex.regWrite = true; // JALR writes to rd.
+            // Instead of updating the register immediately, store the link address.
+            next_id_ex.imm = if_id.pc + 4;
+            
+            // Use the register file value for rs1, but if forwarding is enabled, check for forwarded values.
+            uint32_t rs1Val = regs[if_id.instruction.info.i.rs1];
+            if (forwardingEnabled) {
+                uint8_t src1 = if_id.instruction.info.i.rs1;
+                if (ex_mem.regWrite && (getRD(ex_mem.instruction) == src1))
+                    rs1Val = ex_mem.aluResult;
+                else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == src1))
+                    rs1Val = mem_wb.writeData;
+            }
+            next_id_ex.rs1Val = rs1Val;
+            next_id_ex.rs2Val = 0;
+            
+            // Compute jump target using the (possibly forwarded) rs1 value and the immediate from the instruction.
+            int jumpTarget = rs1Val + if_id.instruction.info.i.imm;
+            jumpTarget &= ~1; // Ensure proper alignment.
+            PC = jumpTarget - 4;  // Adjust PC (the updateLatches later adds 4).
+            
+            // Flush IF/ID to avoid re-decoding.
+            Instruction nop;
+            nop.type = InstType::NOP;
+            next_if_id.instruction = nop;
+            next_if_id.pc = PC;
+            
+            stallIF = false;
+            return;
+        }
+        break;
+
+
 
             // -----------------
             // S-TYPE
@@ -492,32 +523,31 @@ void Processor::decode(int cycle) {
             // -----------------
             case InstType::J_TYPE: {
                 int32_t offset = if_id.instruction.info.j.imm;
-                // Unconditional jump
-                // -4 because +4 will take place in UpdateLatch
-                PC = if_id.pc + offset -4;
-
-                // Flush pipeline: send NOP to ID/EX
+                // uint8_t rd = if_id.instruction.info.j.rd;
+                
+                // Set up the ID/EX latch:
+                next_id_ex.pc = if_id.pc;
+                next_id_ex.instruction = if_id.instruction;
+                next_id_ex.regWrite = true;  // JAL writes to rd.
+                // Store the link address (PC + 4) in the imm field.
+                next_id_ex.imm = if_id.pc + 4;
+                // You can clear rs1Val/rs2Val as they're unused.
+                next_id_ex.rs1Val = 0;
+                next_id_ex.rs2Val = 0;
+                
+                // Update PC for the jump. The -4 is needed because the updateLatches stage will add 4.
+                PC = if_id.pc + offset - 4;
+                
+                // Flush the IF/ID latch.
                 Instruction nop;
                 nop.type = InstType::NOP;
-                next_id_ex.instruction = nop;
-                next_id_ex.regWrite    = false;
-                next_id_ex.memRead     = false;
-                next_id_ex.memWrite    = false;
-                next_id_ex.branch      = false;
-                next_id_ex.aluOp       = ALUOp::NONE;
-                next_id_ex.rs1Val      = 0;
-                next_id_ex.rs2Val      = 0;
-                next_id_ex.imm         = 0;
-
-                // ALSO flush IF/ID so we won't re-decode the same jump
                 next_if_id.instruction = nop;
-                next_if_id.pc          = PC;
-
-                // DO NOT stall next cycle — let new fetch proceed
+                next_if_id.pc = PC;
+                
                 stallIF = false;
-
-                return; 
+                return;
             }
+            
 
             // -----------------
             // NOP / UNKNOWN
@@ -637,7 +667,16 @@ void Processor::execute(int cycle) {
 
         int aluResult = 0;
         // Perform the ALU operation as needed.
-        switch (id_ex.aluOp) {
+        // Special case: For JAL, simply pass along the link address (PC+4) stored in id_ex.imm.
+        // Special case: For JALR (opcode 0x67), forward the link address (PC+4) stored in id_ex.imm.
+        if (id_ex.instruction.opcode == 0x67) {
+            aluResult = id_ex.imm;
+        } else if (id_ex.instruction.type == InstType::J_TYPE) {
+            aluResult = id_ex.imm;
+        }   
+        else
+        {
+            switch (id_ex.aluOp) {
             case ALUOp::ADD:
                 aluResult = ALU::add(operand1, operand2);
                 break;
@@ -666,7 +705,7 @@ void Processor::execute(int cycle) {
                 aluResult = 0;
                 break;
         }
-        
+        }
         // For branch or jump instructions (B-type and J-type),
         // compute the branch/jump target address.
         next_ex_mem.branchTarget = id_ex.pc + id_ex.imm;

@@ -1,112 +1,144 @@
 Cycle No: 1
 Fetching instruction: 0
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 2
 Fetching instruction: 1
+Operand1: 0 Operand2: 0
 Decoding instruction: I TYPE INSTRUCTION
-rd: 7
+rd: 1
 rs1: 0
 funct3: 0
-imm: 3
+imm: 52
 
 Cycle No: 3
 Fetching instruction: 2
+Operand1: 0 Operand2: 52
 Decoding instruction: I TYPE INSTRUCTION
-rd: 8
-rs1: 0
+rd: 2
+rs1: 1
 funct3: 0
-imm: 16
+imm: 12
 
 Cycle No: 4
-Fetching instruction: 3
-Decoding instruction: R TYPE INSTRUCTION
-rd: 9
-rs1: 8
-rs2: 7
-funct3: 1
-funct7: 0
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 2
+rs1: 1
+funct3: 0
+imm: 12
 
 Cycle No: 5
-Fetching instruction: 3
-Decoding instruction: R TYPE INSTRUCTION
-rd: 9
-rs1: 8
-rs2: 7
-funct3: 1
-funct7: 0
+Forwarded rs1 in EX stage
+Operand1: 52 Operand2: 8
+Decoding instruction: Unknown instruction type
 
 Cycle No: 6
-Fetching instruction: 3
-Decoding instruction: R TYPE INSTRUCTION
-rd: 9
-rs1: 8
-rs2: 7
-funct3: 1
-funct7: 0
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
 
 Cycle No: 7
-Fetching instruction: 4
-Decoding instruction: R TYPE INSTRUCTION
-rd: 10
-rs1: 8
-rs2: 7
-funct3: 5
-funct7: 0
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
 
 Cycle No: 8
-Decoding instruction: R TYPE INSTRUCTION
-rd: 11
-rs1: 8
-rs2: 7
-funct3: 5
-funct7: 32
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
 
 Cycle No: 9
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 10
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 11
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 12
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 13
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 14
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
 Cycle No: 15
+Operand1: 0 Operand2: 0
 Decoding instruction: Unknown instruction type
 
-                     :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15
-addi x7 x0 3         :        IF        ID        EX       MEM        WB                                                                                                    
-addi x8 x0 16        :                  IF        ID        EX       MEM        WB                                                                                          
-sll x9 x8 x7         :                            IF        ID         -         -        EX       MEM        WB                                                            
-srl x10 x8 x7        :                                      IF        IF        IF        ID        EX       MEM        WB                                                  
-sra x11 x8 x7        :                                                                    IF        ID        EX       MEM        WB                                        
-addi x7 x0 3:IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; 
-addi x8 x0 16: ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; 
-sll x9 x8 x7: ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; 
-srl x10 x8 x7: ; ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; 
-sra x11 x8 x7: ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; 
+Cycle No: 16
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 17
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 18
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 19
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 20
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 21
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 22
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 23
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 24
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 25
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+                     :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15       C16       C17       C18       C19       C20       C21       C22       C23       C24       C25
+addi x1 x0 52        :        IF        ID        EX       MEM        WB                                                                                                                                                                                                        
+jalr x2 x1 12        :                  IF        ID         -        EX       MEM        WB                                                                                                                                                                                    
+addi x2 x0 10        :                            IF        IF                                                                                                                                                                                                                  
+addi x3 x0 10        :                                                                                                                                                                                                                                                          
+addi x4 x0 10        :                                                                                                                                                                                                                                                          
+addi x1 x0 52:IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+jalr x2 x1 12: ;IF;ID;-;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x2 x0 10: ; ;IF;IF; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x3 x0 10: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x4 x0 10: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
 Registers: 
 x0: 0
-x1: 0
-x2: 0
+x1: 52
+x2: 8
 x3: 0
 x4: 0
 x5: 0
 x6: 0
-x7: 3
-x8: 16
-x9: 128
-x10: 2
-x11: 2
+x7: 0
+x8: 0
+x9: 0
+x10: 0
+x11: 0
 x12: 0
 x13: 0
 x14: 0
@@ -127,4 +159,4 @@ x28: 0
 x29: 0
 x30: 0
 x31: 0
-Forwarding enabled: false
+Forwarding enabled: true
