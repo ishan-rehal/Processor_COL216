@@ -140,7 +140,7 @@ void Processor::fetch(int cycle) {
             // Normal fetch
             next_if_id.instruction = instructionMemory[PC / 4];
             next_if_id.pc = PC;
-            std::cout << "Fetching instruction: " << PC / 4 << std::endl;
+            // std::cout << "Fetching instruction: " << PC / 4 << std::endl;
             logInstructionStage(next_if_id.instruction, "IF");
         }
         else {
@@ -170,9 +170,9 @@ void Processor::decode(int cycle) {
             // }
         }
         
-        std::cout << "Decoding instruction: ";
-        if_id.instruction.print_inst_members();
-        std::cout << std::endl;
+        // std::cout << "Decoding instruction: ";
+        // if_id.instruction.print_inst_members();
+        // std::cout << std::endl;
 
         // If not a NOP and no stall, log "ID".
         if (if_id.instruction.type != InstType::NOP && !stallNeeded) {
@@ -444,7 +444,7 @@ void Processor::decode(int cycle) {
                 
                 // Evaluate the branch condition using the (possibly forwarded) values.
                 uint8_t f3 = if_id.instruction.info.b.funct3;
-                std:: cout << "Evaluating BRANCH with rs1 = " << rs1Val << ", rs2 = " << rs2Val << std::endl;
+                // std:: cout << "Evaluating BRANCH with rs1 = " << rs1Val << ", rs2 = " << rs2Val << std::endl;
                 bool branchTaken = false;
                 switch (f3) {
                     case 0: // BEQ
@@ -641,10 +641,10 @@ void Processor::execute(int cycle) {
             // Forward for operand1 (rs1)
             if (rs1 != 0) {
                 if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs1)) {
-                    std::cout << "Forwarded rs1 in EX stage" << std::endl;
+                    // std::cout << "Forwarded rs1 in EX stage" << std::endl;
                     operand1 = ex_mem.aluResult;
                 } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs1)) {
-                    std::cout << "Forwarded rs1 in EX stage" << std::endl;
+                    // std::cout << "Forwarded rs1 in EX stage" << std::endl;
                     operand1 = mem_wb.writeData;
                 }
             }
@@ -652,14 +652,14 @@ void Processor::execute(int cycle) {
             // Forward for operand2 (rs2), if applicable.
             if (useRS2 && rs2 != 0 && id_ex.instruction.type != InstType::S_TYPE) {
                 if (ex_mem.regWrite && (getRD(ex_mem.instruction) == rs2)) {
-                    std::cout << "Forwarded rs2 in EX stage" << std::endl;
+                    // std::cout << "Forwarded rs2 in EX stage" << std::endl;
                     operand2 = ex_mem.aluResult;
                 } else if (mem_wb.regWrite && (getRD(mem_wb.instruction) == rs2)) {
-                    std::cout << "Forwarded rs2 in EX stage" << std::endl;
+                    // std::cout << "Forwarded rs2 in EX stage" << std::endl;
                     operand2 = mem_wb.writeData;
                 }
             }
-            std :: cout << "Operand1: " << operand1 << " Operand2: " << operand2 << std::endl;
+            // std :: cout << "Operand1: " << operand1 << " Operand2: " << operand2 << std::endl;
         }
 
 
@@ -744,7 +744,7 @@ void Processor::memAccess(int cycle) {
                 value = mem_wb.writeData;
             }
         }
-        std::cout << "Storing value " << value << " to address " << addr << std::endl;
+        // std::cout << "Storing value " << value << " to address " << addr << std::endl;
         uint8_t funct3 = ex_mem.instruction.info.s.funct3;
         switch (funct3) {
             case 0: // SB: Store Byte

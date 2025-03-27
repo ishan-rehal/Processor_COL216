@@ -83,7 +83,7 @@ int main(int argc, char* argv[]) {
 
     // Open "output.txt" in the current directory (src).
     // All std::cout output will be redirected to this file.
-    std::ofstream outFile("../output_files/output.txt");
+    std::ofstream outFile("../outputfiles/output.txt");
     if (!outFile.is_open()) {
         std::cerr << "Error: Could not open output.txt for writing.\n";
         return 1;
@@ -100,13 +100,13 @@ int main(int argc, char* argv[]) {
 
     // Run simulation for the specified number of cycles.
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
-        std::cout << "Cycle No: " << cycle + 1 << std::endl;
+        // std::cout << "Cycle No: " << cycle + 1 << std::endl;
         processor.runCycle();
     }
-    processor.printFullPipelineLog();
+    // processor.printFullPipelineLog();
     processor.printFullPipelineLogSimple();
-    processor.print_registers();
-    std::cout << "Forwarding enabled: " << (forwarding ? "true" : "false") << std::endl;
+    // processor.print_registers();
+    // std::cout << "Forwarding enabled: " << (forwarding ? "true" : "false") << std::endl;
 
     // Restore std::cout to its old buffer
     std::cout.rdbuf(oldCoutBuf);
