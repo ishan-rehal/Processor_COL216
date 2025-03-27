@@ -1,0 +1,401 @@
+Cycle No: 1
+Fetching instruction: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 2
+Fetching instruction: 1
+Decoding instruction: I TYPE INSTRUCTION
+rd: 8
+rs1: 0
+funct3: 0
+imm: 12
+
+Cycle No: 3
+Fetching instruction: 2
+Decoding instruction: I TYPE INSTRUCTION
+rd: 5
+rs1: 0
+funct3: 0
+imm: 72
+
+Cycle No: 4
+Fetching instruction: 3
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 0
+
+Cycle No: 5
+Fetching instruction: 3
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 0
+
+Cycle No: 6
+Fetching instruction: 3
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 0
+
+Cycle No: 7
+Fetching instruction: 4
+Decoding instruction: I TYPE INSTRUCTION
+rd: 5
+rs1: 0
+funct3: 0
+imm: 73
+
+Cycle No: 8
+Fetching instruction: 5
+Storing value 72 to address 12
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 4
+
+Cycle No: 9
+Fetching instruction: 5
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 4
+
+Cycle No: 10
+Fetching instruction: 5
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 4
+
+Cycle No: 11
+Fetching instruction: 6
+Decoding instruction: I TYPE INSTRUCTION
+rd: 5
+rs1: 0
+funct3: 0
+imm: 0
+
+Cycle No: 12
+Fetching instruction: 7
+Storing value 73 to address 16
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 8
+
+Cycle No: 13
+Fetching instruction: 7
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 8
+
+Cycle No: 14
+Fetching instruction: 7
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 8
+rs2: 5
+funct3: 2
+imm: 8
+
+Cycle No: 15
+Fetching instruction: 8
+Decoding instruction: I TYPE INSTRUCTION
+rd: 6
+rs1: 8
+funct3: 0
+imm: 0
+
+Cycle No: 16
+Fetching instruction: 9
+Storing value 0 to address 20
+Decoding instruction: I TYPE INSTRUCTION
+rd: 7
+rs1: 0
+funct3: 0
+imm: 0
+
+Cycle No: 17
+Fetching instruction: 10
+Decoding instruction: I TYPE INSTRUCTION
+rd: 28
+rs1: 6
+funct3: 2
+imm: 0
+
+Cycle No: 18
+Fetching instruction: 10
+Decoding instruction: I TYPE INSTRUCTION
+rd: 28
+rs1: 6
+funct3: 2
+imm: 0
+
+Cycle No: 19
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 20
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 21
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 22
+Fetching instruction: 11
+Decoding instruction: Unknown instruction type
+
+Cycle No: 23
+Fetching instruction: 12
+Decoding instruction: I TYPE INSTRUCTION
+rd: 7
+rs1: 7
+funct3: 0
+imm: 1
+
+Cycle No: 24
+Fetching instruction: 13
+Decoding instruction: I TYPE INSTRUCTION
+rd: 6
+rs1: 6
+funct3: 0
+imm: 4
+
+Cycle No: 25
+Fetching instruction: 14
+Decoding instruction: J TYPE INSTRUCTION
+rd: 0
+imm: -16
+
+Cycle No: 26
+Fetching instruction: 9
+Decoding instruction: Unknown instruction type
+
+Cycle No: 27
+Fetching instruction: 10
+Decoding instruction: I TYPE INSTRUCTION
+rd: 28
+rs1: 6
+funct3: 2
+imm: 0
+
+Cycle No: 28
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 29
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 30
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 31
+Fetching instruction: 11
+Decoding instruction: Unknown instruction type
+
+Cycle No: 32
+Fetching instruction: 12
+Decoding instruction: I TYPE INSTRUCTION
+rd: 7
+rs1: 7
+funct3: 0
+imm: 1
+
+Cycle No: 33
+Fetching instruction: 13
+Decoding instruction: I TYPE INSTRUCTION
+rd: 6
+rs1: 6
+funct3: 0
+imm: 4
+
+Cycle No: 34
+Fetching instruction: 14
+Decoding instruction: J TYPE INSTRUCTION
+rd: 0
+imm: -16
+
+Cycle No: 35
+Fetching instruction: 9
+Decoding instruction: Unknown instruction type
+
+Cycle No: 36
+Fetching instruction: 10
+Decoding instruction: I TYPE INSTRUCTION
+rd: 28
+rs1: 6
+funct3: 2
+imm: 0
+
+Cycle No: 37
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 38
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 39
+Fetching instruction: 11
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 28
+rs2: 0
+funct3: 0
+imm: 16
+
+Cycle No: 40
+Fetching instruction: 14
+Decoding instruction: Unknown instruction type
+
+Cycle No: 41
+Fetching instruction: 15
+Decoding instruction: I TYPE INSTRUCTION
+rd: 10
+rs1: 7
+funct3: 0
+imm: 0
+
+Cycle No: 42
+Decoding instruction: I TYPE INSTRUCTION
+rd: 0
+rs1: 0
+funct3: 0
+imm: 0
+
+Cycle No: 43
+Decoding instruction: Unknown instruction type
+
+Cycle No: 44
+Decoding instruction: Unknown instruction type
+
+Cycle No: 45
+Decoding instruction: Unknown instruction type
+
+Cycle No: 46
+Decoding instruction: Unknown instruction type
+
+Cycle No: 47
+Decoding instruction: Unknown instruction type
+
+Cycle No: 48
+Decoding instruction: Unknown instruction type
+
+Cycle No: 49
+Decoding instruction: Unknown instruction type
+
+Cycle No: 50
+Decoding instruction: Unknown instruction type
+
+                     :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15       C16       C17       C18       C19       C20       C21       C22       C23       C24       C25       C26       C27       C28       C29       C30       C31       C32       C33       C34       C35       C36       C37       C38       C39       C40       C41       C42       C43       C44       C45       C46       C47       C48       C49       C50
+addi x8 x0 12        :        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+addi x5 x0 72        :                  IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+sw x5 0 x8           :                            IF        ID         -         -        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                                                                          
+addi x5 x0 73        :                                      IF        IF        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                                                                
+sw x5 4 x8           :                                                                    IF        ID         -         -        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                                  
+addi x5 x0 0         :                                                                              IF        IF        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                                                        
+sw x5 8 x8           :                                                                                                            IF        ID         -         -        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                          
+addi x6 x8 0         :                                                                                                                      IF        IF        IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                                
+addi x7 x0 0         :                                                                                                                                                    IF        ID        EX       MEM        WB                                                                                                                                                                                                                                                                                                                      
+lw x28 0 x6          :                                                                                                                                                              IF        ID         -        EX       MEM        WB                                                IF        ID        EX       MEM        WB                                                IF        ID        EX       MEM        WB                                                                                                              
+beq x28 x0 16        :                                                                                                                                                                        IF        IF        ID         -         -        EX       MEM        WB                            IF        ID         -         -        EX       MEM        WB                            IF        ID         -         -        EX       MEM        WB                                                                                
+addi x7 x7 1         :                                                                                                                                                                                            IF        IF        IF        IF        ID        EX       MEM        WB                  IF        IF        IF        IF        ID        EX       MEM        WB                  IF        IF        IF                                                                                                              
+addi x6 x6 4         :                                                                                                                                                                                                                                    IF        ID        EX       MEM        WB                                                IF        ID        EX       MEM        WB                                                                                                                                            
+jal x0 -16           :                                                                                                                                                                                                                                              IF        ID        EX       MEM        WB                                                IF        ID        EX       MEM        WB                                                                                                                                  
+addi x10 x7 0        :                                                                                                                                                                                                                                                        IF                                                                                        IF                                                          IF        ID        EX       MEM        WB                                                            
+addi x0 x0 0         :                                                                                                                                                                                                                                                                                                                                                                                                                        IF        ID        EX       MEM        WB                                                  
+addi x8 x0 12:IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x5 x0 72: ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+sw x5 0 x8: ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x5 x0 73: ; ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+sw x5 4 x8: ; ; ; ; ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x5 x0 0: ; ; ; ; ; ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+sw x5 8 x8: ; ; ; ; ; ; ; ; ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x6 x8 0: ; ; ; ; ; ; ; ; ; ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x7 x0 0: ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+lw x28 0 x6: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;ID;-;EX;MEM;WB; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; 
+beq x28 x0 16: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;IF;ID;-;-;EX;MEM;WB; ; ;IF;ID;-;-;EX;MEM;WB; ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; ; ; 
+addi x7 x7 1: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;IF;IF;IF;ID;EX;MEM;WB; ;IF;IF;IF;IF;ID;EX;MEM;WB; ;IF;IF;IF; ; ; ; ; ; ; ; ; ; ; 
+addi x6 x6 4: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; ; 
+jal x0 -16: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; ; ; ; 
+addi x10 x7 0: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF; ; ; ; ; ; ; ; ;IF; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; ; 
+addi x0 x0 0: ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; ; 
+Registers: 
+x0: 0
+x1: 0
+x2: 0
+x3: 0
+x4: 0
+x5: 0
+x6: 20
+x7: 2
+x8: 12
+x9: 0
+x10: 2
+x11: 0
+x12: 0
+x13: 0
+x14: 0
+x15: 0
+x16: 0
+x17: 0
+x18: 0
+x19: 0
+x20: 0
+x21: 0
+x22: 0
+x23: 0
+x24: 0
+x25: 0
+x26: 0
+x27: 0
+x28: 0
+x29: 0
+x30: 0
+x31: 0
+Forwarding enabled: false

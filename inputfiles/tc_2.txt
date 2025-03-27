@@ -1,0 +1,2 @@
+      00400093        addi x1 x0 4
+          ffdff06f        jal x0 -4

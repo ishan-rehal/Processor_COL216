@@ -60,4 +60,5 @@ The simulator has been thoroughly tested. It accurately updates registers (with 
   - Non-forwarding: `./noforward ../inputfiles/filename.txt cycleCount`
   - Forwarding: `./forward ../inputfiles/filename.txt cycleCount`
 - **Output:** The simulator will write the output in an **output.txt** file with detailed information on which instruction is in which stage in which cycle. Various data from the pipeline latches is captured each cycle, and a proper table along with a simplified output (as specified in the assignment PDF) is written to output.txt.
+- **Note:** To get the same output as that of our test cases when you run it as told above you would need to modify the main.cpp to enable the print functions.
 

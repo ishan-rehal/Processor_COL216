@@ -1,0 +1,135 @@
+Cycle No: 1
+Fetching instruction: 0
+Operand1: 3741315856 Operand2: 3741315896
+Decoding instruction: Unknown instruction type
+
+Cycle No: 2
+Fetching instruction: 1
+Operand1: 0 Operand2: 0
+Storing value 32518 to address 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 2
+rs1: 0
+funct3: 0
+imm: 0
+
+Cycle No: 3
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+Cycle No: 4
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+Cycle No: 5
+Fetching instruction: 1
+Forwarded rs1 in EX stage
+Operand1: 0 Operand2: 8
+Decoding instruction: Unknown instruction type
+
+Cycle No: 6
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+Cycle No: 7
+Fetching instruction: 1
+Operand1: 0 Operand2: 8
+Decoding instruction: Unknown instruction type
+
+Cycle No: 8
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+Cycle No: 9
+Fetching instruction: 1
+Operand1: 0 Operand2: 8
+Decoding instruction: Unknown instruction type
+
+Cycle No: 10
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+Cycle No: 11
+Fetching instruction: 1
+Operand1: 0 Operand2: 8
+Decoding instruction: Unknown instruction type
+
+Cycle No: 12
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 2
+funct3: 0
+imm: 4
+
+                     :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12
+addi x2 x0 0         :        IF        ID        EX       MEM        WB                                                                      
+jalr x1 x2 4         :                  IF        ID         -     IF/EX    MEM/ID  IF/EX/WB    MEM/ID  IF/EX/WB    MEM/ID  IF/EX/WB    MEM/ID
+lw x2 3 x1           :                            IF        IF                  IF                  IF                  IF                  IF
+lw x3 2 x2           :                                                                                                                        
+sw x4 3 x5           :                                                                                                                        
+addi x2 x0 0:IF;ID;EX;MEM;WB; ; ; ; ; ; ; 
+jalr x1 x2 4: ;IF;ID;-;IF/EX;MEM/ID;IF/EX/WB;MEM/ID;IF/EX/WB;MEM/ID;IF/EX/WB;MEM/ID
+lw x2 3 x1: ; ;IF;IF; ;IF; ;IF; ;IF; ;IF
+lw x3 2 x2: ; ; ; ; ; ; ; ; ; ; ; 
+sw x4 3 x5: ; ; ; ; ; ; ; ; ; ; ; 
+Registers: 
+x0: 0
+x1: 8
+x2: 0
+x3: 0
+x4: 0
+x5: 0
+x6: 0
+x7: 0
+x8: 0
+x9: 0
+x10: 0
+x11: 0
+x12: 0
+x13: 0
+x14: 0
+x15: 0
+x16: 0
+x17: 0
+x18: 0
+x19: 0
+x20: 0
+x21: 0
+x22: 0
+x23: 0
+x24: 0
+x25: 0
+x26: 0
+x27: 0
+x28: 0
+x29: 0
+x30: 0
+x31: 0
+Forwarding enabled: true

@@ -1,0 +1,119 @@
+Cycle No: 1
+Fetching instruction: 0
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 2
+Fetching instruction: 1
+Operand1: 0 Operand2: 0
+Decoding instruction: R TYPE INSTRUCTION
+rd: 6
+rs1: 5
+rs2: 10
+funct3: 0
+funct7: 0
+
+Cycle No: 3
+Fetching instruction: 2
+Operand1: 0 Operand2: 0
+Decoding instruction: I TYPE INSTRUCTION
+rd: 6
+rs1: 6
+funct3: 2
+imm: 0
+
+Cycle No: 4
+Fetching instruction: 3
+Forwarded rs1 in EX stage
+Operand1: 0 Operand2: 0
+Decoding instruction: R TYPE INSTRUCTION
+rd: 6
+rs1: 0
+rs2: 0
+funct3: 0
+funct7: 0
+
+Cycle No: 5
+Operand1: 0 Operand2: 0
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 6
+rs2: 0
+funct3: 0
+imm: 12
+
+Cycle No: 6
+Operand1: 0 Operand2: 0
+Decoding instruction: B TYPE INSTRUCTION
+rs1: 6
+rs2: 0
+funct3: 0
+imm: 12
+
+Cycle No: 7
+Forwarded rs1 in EX stage
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 8
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 9
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 10
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 11
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+Cycle No: 12
+Operand1: 0 Operand2: 0
+Decoding instruction: Unknown instruction type
+
+                     :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12
+add x6 x5 x10        :        IF        ID        EX       MEM        WB                                                                      
+lw x6 0 x6           :                  IF        ID        EX       MEM        WB                                                            
+add x6 x0 x0         :                            IF        ID        EX       MEM        WB                                                  
+beq x6 x0 12         :                                      IF        ID         -        EX       MEM        WB                              
+add x6 x5 x10:IF;ID;EX;MEM;WB; ; ; ; ; ; ; 
+lw x6 0 x6: ;IF;ID;EX;MEM;WB; ; ; ; ; ; 
+add x6 x0 x0: ; ;IF;ID;EX;MEM;WB; ; ; ; ; 
+beq x6 x0 12: ; ; ;IF;ID;-;EX;MEM;WB; ; ; 
+Registers: 
+x0: 0
+x1: 0
+x2: 0
+x3: 0
+x4: 0
+x5: 0
+x6: 0
+x7: 0
+x8: 0
+x9: 0
+x10: 0
+x11: 0
+x12: 0
+x13: 0
+x14: 0
+x15: 0
+x16: 0
+x17: 0
+x18: 0
+x19: 0
+x20: 0
+x21: 0
+x22: 0
+x23: 0
+x24: 0
+x25: 0
+x26: 0
+x27: 0
+x28: 0
+x29: 0
+x30: 0
+x31: 0
+Forwarding enabled: true

@@ -1,0 +1,6 @@
+00900193        addi x3 x0 9
+00900093        addi x1 x0 9
+00808313        addi x6 x1 8
+fe008ee3        beq x1 x0 -4
+0020a1a3        sw x2 3 x1
+0030a203        lw x4 3 x1
