@@ -290,7 +290,7 @@ public:
     bool stallNeeded = false;
     std::vector<int> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
-    std::vector<std::string> asmInstructions;  // New vector for assembly statements
+
     std::vector<uint8_t> stack_memory;
     
     // Pipeline latches.
@@ -316,7 +316,7 @@ public:
     int totalCycleCount;      // Total number of cycles (from input)
     int currentCycle;         // Simulation cycle counter (full cycles)
     bool headerPrinted;       // To print header only once
-
+    std::vector<std::string> asmInstructions;  // New vector for assembly statements
     
 
     // Pipeline log: one row per instruction; each row is a vector of strings (one cell per cycle)

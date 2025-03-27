@@ -32,20 +32,24 @@ void Instruction::decode() {
     }
     else if (opcode == 0x13 || opcode == 0x03 || opcode == 0x67) {
         // --------------------------
-        // I-Type (ADDI/LOAD/JALR, etc.)
-        // 12-bit signed immediate (bits [31:20])
+        // I-Type (ADDI/LOAD/JALR or shift-immediate)
         // --------------------------
         type = InstType::I_TYPE;
-        info.i.rd     = (rawOpcode >> 7) & 0x1F;
+        info.i.rd     = (rawOpcode >> 7)  & 0x1F;
         info.i.funct3 = (rawOpcode >> 12) & 0x7;
         info.i.rs1    = (rawOpcode >> 15) & 0x1F;
-    
-        // Extract the 12-bit immediate, then sign-extend
-        int32_t imm_i = (rawOpcode >> 20) & 0xFFF; // bits [31:20]
-        if (imm_i & 0x800) { // sign extension check
-            imm_i |= 0xFFFFF000;
+        // For opcode 0x13, if funct3 indicates a shift immediate,
+        // extract only the lower 5 bits (bits [24:20]).
+        if (opcode == 0x13 && (info.i.funct3 == 0x1 || info.i.funct3 == 0x5)) {
+            info.i.imm = (rawOpcode >> 20) & 0x1F;
+        } else {
+            // Normal I-Type: extract 12-bit immediate and sign-extend.
+            int32_t imm_i = (rawOpcode >> 20) & 0xFFF;
+            if (imm_i & 0x800) { // sign extension check
+                imm_i |= 0xFFFFF000;
+            }
+            info.i.imm = imm_i;
         }
-        info.i.imm = imm_i;
     }
     else if (opcode == 0x23) {
         // --------------------------

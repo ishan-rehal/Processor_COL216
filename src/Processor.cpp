@@ -545,6 +545,10 @@ void Processor::execute(int cycle) {
         //           << ", rs2Val = " << id_ex.rs2Val
         //           << ", imm = " << id_ex.imm << std::endl;
         uint32_t operand1 = id_ex.rs1Val;
+        if(id_ex.instruction.type == InstType::U_TYPE)
+        {
+            operand1 = id_ex.pc;
+        }
         uint32_t operand2 = 0;
 
         // Set operand2 based on instruction type.
@@ -638,7 +642,6 @@ void Processor::execute(int cycle) {
                 aluResult = ALU::add(operand1, operand2);
                 break;
             case ALUOp::SUB:
-                // std::cout << "Subtracting " << operand1 << " - " << operand2 << std::endl;
                 aluResult = ALU::sub(operand1, operand2);
                 break;
             case ALUOp::MUL:
@@ -646,6 +649,18 @@ void Processor::execute(int cycle) {
                 break;
             case ALUOp::DIV:
                 aluResult = ALU::div(operand1, operand2);
+                break;
+            case ALUOp::SLL:
+            case ALUOp::SLLI:
+                aluResult = ALU::sll(operand1, operand2);
+                break;
+            case ALUOp::SRL:
+            case ALUOp::SRLI:
+                aluResult = ALU::srl(operand1, operand2);
+                break;
+            case ALUOp::SRA:
+            case ALUOp::SRAI:
+                aluResult = ALU::sra(operand1, operand2);
                 break;
             default:
                 aluResult = 0;

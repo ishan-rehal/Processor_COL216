@@ -5,48 +5,62 @@ Decoding instruction: Unknown instruction type
 Cycle No: 2
 Fetching instruction: 1
 Decoding instruction: I TYPE INSTRUCTION
-rd: 1
+rd: 7
 rs1: 0
 funct3: 0
-imm: 52
+imm: 3
 
 Cycle No: 3
 Fetching instruction: 2
-Decoding instruction: S TYPE INSTRUCTION
+Decoding instruction: I TYPE INSTRUCTION
+rd: 8
 rs1: 0
-rs2: 1
-funct3: 2
-imm: 0
+funct3: 0
+imm: 16
 
 Cycle No: 4
-Fetching instruction: 2
-Decoding instruction: S TYPE INSTRUCTION
-rs1: 0
-rs2: 1
-funct3: 2
-imm: 0
+Fetching instruction: 3
+Decoding instruction: R TYPE INSTRUCTION
+rd: 9
+rs1: 8
+rs2: 7
+funct3: 1
+funct7: 0
 
 Cycle No: 5
-Fetching instruction: 2
-Decoding instruction: S TYPE INSTRUCTION
-rs1: 0
-rs2: 1
-funct3: 2
-imm: 0
+Fetching instruction: 3
+Decoding instruction: R TYPE INSTRUCTION
+rd: 9
+rs1: 8
+rs2: 7
+funct3: 1
+funct7: 0
 
 Cycle No: 6
-Decoding instruction: I TYPE INSTRUCTION
-rd: 3
-rs1: 0
-funct3: 2
-imm: 0
+Fetching instruction: 3
+Decoding instruction: R TYPE INSTRUCTION
+rd: 9
+rs1: 8
+rs2: 7
+funct3: 1
+funct7: 0
 
 Cycle No: 7
-Storing value 52 to address 0
-Decoding instruction: Unknown instruction type
+Fetching instruction: 4
+Decoding instruction: R TYPE INSTRUCTION
+rd: 10
+rs1: 8
+rs2: 7
+funct3: 5
+funct7: 0
 
 Cycle No: 8
-Decoding instruction: Unknown instruction type
+Decoding instruction: R TYPE INSTRUCTION
+rd: 11
+rs1: 8
+rs2: 7
+funct3: 5
+funct7: 32
 
 Cycle No: 9
 Decoding instruction: Unknown instruction type
@@ -70,25 +84,29 @@ Cycle No: 15
 Decoding instruction: Unknown instruction type
 
                      :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15
-addi x1 x0 52        :        IF        ID        EX       MEM        WB                                                                                                    
-sw x1 0 x0           :                  IF        ID         -         -        EX       MEM        WB                                                                      
-lw x3 0 x0           :                            IF        IF        IF        ID        EX       MEM        WB                                                            
-addi x1 x0 52:IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; 
-sw x1 0 x0: ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; ; 
-lw x3 0 x0: ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; ; 
+addi x7 x0 3         :        IF        ID        EX       MEM        WB                                                                                                    
+addi x8 x0 16        :                  IF        ID        EX       MEM        WB                                                                                          
+sll x9 x8 x7         :                            IF        ID         -         -        EX       MEM        WB                                                            
+srl x10 x8 x7        :                                      IF        IF        IF        ID        EX       MEM        WB                                                  
+sra x11 x8 x7        :                                                                    IF        ID        EX       MEM        WB                                        
+addi x7 x0 3:IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; ; 
+addi x8 x0 16: ;IF;ID;EX;MEM;WB; ; ; ; ; ; ; ; ; 
+sll x9 x8 x7: ; ;IF;ID;-;-;EX;MEM;WB; ; ; ; ; ; 
+srl x10 x8 x7: ; ; ;IF;IF;IF;ID;EX;MEM;WB; ; ; ; ; 
+sra x11 x8 x7: ; ; ; ; ; ;IF;ID;EX;MEM;WB; ; ; ; 
 Registers: 
 x0: 0
-x1: 52
+x1: 0
 x2: 0
-x3: 52
+x3: 0
 x4: 0
 x5: 0
 x6: 0
-x7: 0
-x8: 0
-x9: 0
-x10: 0
-x11: 0
+x7: 3
+x8: 16
+x9: 128
+x10: 2
+x11: 2
 x12: 0
 x13: 0
 x14: 0

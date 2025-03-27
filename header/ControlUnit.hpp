@@ -10,9 +10,15 @@ enum class ALUOp {
     ADD,
     SUB,
     MUL,
-    DIV
-    // You can add more (e.g., AND, OR, etc.) as needed.
+    DIV,
+    SLL,
+    SRL,
+    SRA,
+    SLLI,
+    SRLI,
+    SRAI
 };
+
 
 
 // Structure holding the control signals for an instruction.
