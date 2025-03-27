@@ -42,16 +42,6 @@ public:
     // Runs one simulation cycle (calls all pipeline stages).
     void runCycle();
 
-    
-    // Logging members:
-    int totalCycleCount;      // Total number of cycles (from input)
-    int currentCycle;         // Simulation cycle counter (full cycles)
-    bool headerPrinted;       // To print header only once
-    std::vector<std::string> asmInstructions;  // New vector for assembly statements
-    
-
-    // Pipeline log: one row per instruction; each row is a vector of strings (one cell per cycle)
-    std::vector<std::vector<std::string>> pipelineLog;
 
     // Helper functions for logging.
     void logInstructionStage(const Instruction &instr, const std::string &stage);
