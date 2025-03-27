@@ -7,10 +7,12 @@
 #include <string>
 
 // Constructor: initialize registers, PC, pipeline latches, and the stack memory.
-Processor::Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount)
+Processor::Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount,const std::vector<std::string>& asmInstr)
     : PC(0), forwardingEnabled(forwarding),stallIF(false),stallNeeded(false), totalCycleCount(totalCycleCount),
-    currentCycle(0), headerPrinted(false)  
+    currentCycle(0), headerPrinted(false),asmInstructions(asmInstr)  // Initialize our new vector  
 {
+
+
     // Load instructions from hex strings.
     for (const auto &hex : instructionsHex) {
         Instruction inst(hex);
@@ -86,8 +88,18 @@ void Processor::printPipelineLogHeader() const {
 
 // Print one instruction’s log row (e.g., "I1 :  IF   ID   EX   MEM   WB ...")
 void Processor::printInstructionLog(int instrId) const {
-    if (instrId < 0 || instrId >= (int)pipelineLog.size()) return;
-    std::cout << "I" << (instrId + 1) << std::setw(5) << ":";
+    if (instrId < 0 || instrId >= static_cast<int>(pipelineLog.size()))
+        return;
+    
+    // Use the assembly statement if available, otherwise default to "I<number>"
+    std::string label;
+    if (instrId < static_cast<int>(asmInstructions.size()) && !asmInstructions[instrId].empty()) {
+        label = asmInstructions[instrId];
+    } else {
+        label = "I" + std::to_string(instrId + 1);
+    }
+    
+    std::cout << std::setw(20) << label << " :";
     for (const auto &cell : pipelineLog[instrId]) {
         std::cout << std::setw(10) << cell;
     }
@@ -897,7 +909,7 @@ void Processor::runCycle() {
     updateLatches();
     
     // Print the concise pipeline state.
-    printPipelineState();
+    // printPipelineState();
     currentCycle++;
     
     // Also print detailed pipeline debug info.
@@ -966,14 +978,60 @@ void Processor::print_registers()
 
 }
 void Processor::printFullPipelineLog() const {
-    // Print the header row with cycle numbers.
-    printPipelineLogHeader();
-    // Loop through the entire pipeline log and print each instruction’s log row.
+    const int labelWidth = 20; // Adjust this width as needed for your assembly statements.
+    const int cellWidth = 10;  // Fixed width for each cycle cell.
+    
+    // Print header row with cycle numbers.
+    std::cout << std::setw(labelWidth) << std::left << " " << " :";
+    for (int i = 0; i < totalCycleCount; ++i) {
+        std::cout << std::setw(cellWidth) << std::right << ("C" + std::to_string(i + 1));
+    }
+    std::cout << std::endl;
+    
+    // Loop through the entire pipeline log and print each instruction's log row.
     for (size_t i = 0; i < pipelineLog.size(); ++i) {
-        std::cout << "I" << (i + 1) << std::setw(5) << ":";
+        // Use the assembly statement if available; otherwise, default to "I<number>".
+        std::string label;
+        if (i < asmInstructions.size() && !asmInstructions[i].empty())
+            label = asmInstructions[i];
+        else
+            label = "I" + std::to_string(i + 1);
+        
+        // Print the label left-aligned within the fixed width.
+        std::cout << std::setw(labelWidth) << std::left << label << " :";
+        // Print each cell right-aligned.
         for (const auto &cell : pipelineLog[i]) {
-            std::cout << std::setw(10) << cell;
+            std::cout << std::setw(cellWidth) << std::right << cell;
         }
         std::cout << std::endl;
     }
 }
+
+void Processor::printFullPipelineLogSimple() const {
+    for (size_t i = 0; i < pipelineLog.size(); ++i) {
+        // Use the assembly instruction if available; if not, use a single space.
+        std::string label;
+        if (i < asmInstructions.size() && !asmInstructions[i].empty())
+            label = asmInstructions[i];
+        else
+            label = " ";
+        
+        // Print the label and a colon.
+        std::cout << label << ":";
+        
+        // Print each stage from the pipeline log separated by semicolons.
+        for (size_t j = 0; j < pipelineLog[i].size(); ++j) {
+            if (j > 0)
+                std::cout << ";";
+            // Print the stage; if the cell is empty, print a single space.
+            if (pipelineLog[i][j].empty())
+                std::cout << " ";
+            else
+                std::cout << pipelineLog[i][j];
+        }
+        std::cout << std::endl;
+    }
+}
+
+
+

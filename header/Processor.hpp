@@ -290,6 +290,7 @@ public:
     bool stallNeeded = false;
     std::vector<int> regs;  // 32 general-purpose registers.
     std::vector<Instruction> instructionMemory;
+    std::vector<std::string> asmInstructions;  // New vector for assembly statements
     std::vector<uint8_t> stack_memory;
     
     // Pipeline latches.
@@ -303,7 +304,7 @@ public:
     MEM_WB_Latch next_mem_wb;
 
     // Constructor: loads instructions from hex strings and sets forwarding mode.
-    Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount);
+    Processor(const std::vector<std::string>& instructionsHex, bool forwarding, int totalCycleCount,const std::vector<std::string>& asmInstr);
     
     // Resets the processor state.
     uint8_t getRD(const Instruction &inst);
@@ -342,6 +343,7 @@ public:
     void debug_print();
     void print_registers();
     void printFullPipelineLog() const;
+    void printFullPipelineLogSimple() const;
 };
 
 #endif // PROCESSOR_HPP

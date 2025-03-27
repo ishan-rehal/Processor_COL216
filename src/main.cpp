@@ -93,9 +93,10 @@ int main(int argc, char* argv[]) {
 
     // Read instructions from file.
     std::vector<std::string> instructions = Utils::readInstructionsFromFile(inputFile);
+    std::vector<std::string> asmStatements = Utils::readAssemblyStatementsFromFile(inputFile);
 
     // Create Processor instance.
-    Processor processor(instructions, forwarding, cycleCount);
+    Processor processor(instructions, forwarding, cycleCount,asmStatements);
 
     // Run simulation for the specified number of cycles.
     for (int cycle = 0; cycle < cycleCount; ++cycle) {
@@ -103,6 +104,7 @@ int main(int argc, char* argv[]) {
         processor.runCycle();
     }
     processor.printFullPipelineLog();
+    processor.printFullPipelineLogSimple();
     processor.print_registers();
     std::cout << "Forwarding enabled: " << (forwarding ? "true" : "false") << std::endl;
 
