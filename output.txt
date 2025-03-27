@@ -1,0 +1,274 @@
+Cycle No: 1
+Fetching instruction: 0
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+03400093
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 2
+Fetching instruction: 1
+Decoding instruction: I TYPE INSTRUCTION
+rd: 1
+rs1: 0
+funct3: 0
+imm: 52
+
+----- Pipeline State -----
+IF/ID: 
+00102023
+ID/EX: 
+03400093
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 3
+Fetching instruction: 2
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 0
+rs2: 1
+funct3: 2
+imm: 0
+
+----- Pipeline State -----
+IF/ID: 
+00102023
+ID/EX: 
+NOP
+EX/MEM: 
+03400093
+ | ALU Result: 52
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 4
+Fetching instruction: 2
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 0
+rs2: 1
+funct3: 2
+imm: 0
+
+----- Pipeline State -----
+IF/ID: 
+00102023
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+03400093
+ | Write Data: 52
+Cycle No: 5
+Fetching instruction: 2
+Decoding instruction: S TYPE INSTRUCTION
+rs1: 0
+rs2: 1
+funct3: 2
+imm: 0
+
+----- Pipeline State -----
+IF/ID: 
+00002183
+ID/EX: 
+00102023
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 6
+Decoding instruction: I TYPE INSTRUCTION
+rd: 3
+rs1: 0
+funct3: 2
+imm: 0
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+00002183
+EX/MEM: 
+00102023
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 7
+Storing value 52 to address 0
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+00002183
+ | ALU Result: 0
+MEM/WB: 
+00102023
+ | Write Data: 0
+Cycle No: 8
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+00002183
+ | Write Data: 52
+Cycle No: 9
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 10
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 11
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 12
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 13
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 14
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+Cycle No: 15
+Decoding instruction: Unknown instruction type
+
+----- Pipeline State -----
+IF/ID: 
+NOP
+ID/EX: 
+NOP
+EX/MEM: 
+NOP
+ | ALU Result: 0
+MEM/WB: 
+NOP
+ | Write Data: 0
+      :        C1        C2        C3        C4        C5        C6        C7        C8        C9       C10       C11       C12       C13       C14       C15
+I1    :        IF        ID        EX       MEM        WB                                                                                                    
+I2    :                  IF        ID         -         -        EX       MEM        WB                                                                      
+I3    :                            IF        IF        IF        ID        EX       MEM        WB                                                            
+Registers: 
+x0: 0
+x1: 52
+x2: 0
+x3: 52
+x4: 0
+x5: 0
+x6: 0
+x7: 0
+x8: 0
+x9: 0
+x10: 0
+x11: 0
+x12: 0
+x13: 0
+x14: 0
+x15: 0
+x16: 0
+x17: 0
+x18: 0
+x19: 0
+x20: 0
+x21: 0
+x22: 0
+x23: 0
+x24: 0
+x25: 0
+x26: 0
+x27: 0
+x28: 0
+x29: 0
+x30: 0
+x31: 0
+Forwarding enabled: false
