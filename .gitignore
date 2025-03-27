@@ -1,0 +1,8 @@
+# Ignore object files
+*.o
+
+# Ignore compiled executables (Linux/macOS)
+*.out
+*.exe
+
+
